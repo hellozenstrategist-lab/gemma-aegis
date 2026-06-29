@@ -230,6 +230,8 @@ class ServerUiTests(unittest.TestCase):
         html = server.load_classic_index_html()
         self.assertIn("Aegis Input", html)
         self.assertIn('id="loadBlueTeamScenario"', html)
+        self.assertIn('class="gemma-star"', html)
+        self.assertIn("gemmaFloat", html)
         self.assertEqual(server.INDEX_HTML, html)
 
     def test_v6_ui_routes_classic_slash_command_locally(self):
