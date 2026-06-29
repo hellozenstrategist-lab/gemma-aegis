@@ -224,6 +224,11 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn("preview.style.display = 'none'", INDEX_HTML)
         self.assertIn("$('imageFile').value = ''", INDEX_HTML)
 
+    def test_v6_ui_routes_classic_slash_command_locally(self):
+        html = server.load_v6_index_html()
+        self.assertIn("/^\\/classic\\/?$/.test(low)", html)
+        self.assertIn("window.location.href = '/classic'", html)
+
     def test_index_html_surfaces_top_level_api_errors(self):
         self.assertIn("if (!res.ok || data.error)", INDEX_HTML)
         self.assertIn("data.error || `HTTP ${res.status}`", INDEX_HTML)

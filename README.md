@@ -19,6 +19,7 @@ Static security tools are good at matching known signatures. Gemma Aegis is buil
 - Press `Enter` to send a message. Press `Escape` or click outside the composer to close it.
 - Click the floating Gemma core to open the quick-access menu.
 - Use commands such as `go to telemetry`, `open evidence`, `show containment`, or `go to settings` to change pages.
+- Type `/classic` to open the classic benchmark/control panel.
 - Use commands such as `close incident report`, `open incident report`, `close incident log`, or `show the log` to control the floating incident panel.
 - Double-click the screen where you want Gemma to move.
 - Double-click the floating Gemma core to pick it up, move the mouse, then click once to drop it.
