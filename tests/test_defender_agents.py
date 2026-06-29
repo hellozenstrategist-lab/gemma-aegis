@@ -21,7 +21,7 @@ class BlueTeamDefenderTests(unittest.TestCase):
         brief = get_datashield_product_brief()
         self.assertEqual(brief["name"], "Gemma Aegis")
         self.assertIn("Always-on blue-team defender swarm", brief["tagline"])
-        self.assertIn("Static virus detectors are too slow/dumb", brief["core_pitch"])
+        self.assertIn("Static virus detectors are too slow for modern data breaches", brief["core_pitch"])
         self.assertEqual(DATASHIELD_TELEMETRY_SOURCES, ["identity", "DLP", "endpoint", "SaaS", "storage"])
         self.assertEqual(
             [agent["name"] for agent in brief["agents"]],
@@ -79,7 +79,7 @@ class BlueTeamDefenderTests(unittest.TestCase):
 
     def test_blue_team_scenario_loader_and_ui_are_present(self):
         self.assertIn("Gemma Aegis", INDEX_HTML)
-        self.assertIn("Static virus detectors are too slow/dumb", INDEX_HTML)
+        self.assertIn("Static virus detectors are too slow for modern data breaches", INDEX_HTML)
         self.assertIn("Data Sentinel", INDEX_HTML)
         self.assertIn("Identity Guardian", INDEX_HTML)
         self.assertIn("Endpoint Hunter", INDEX_HTML)

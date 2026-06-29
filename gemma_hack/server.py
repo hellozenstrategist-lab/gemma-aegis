@@ -1,4 +1,4 @@
-﻿"""Stdlib web demo for the Gemma 4 hackathon prep scaffold."""
+"""Stdlib web demo for the Gemma Aegis defender system."""
 
 from __future__ import annotations
 
@@ -210,7 +210,7 @@ INDEX_HTML = '''<!doctype html>
 <header>
   <div class="tag">Always-on blue-team defender swarm</div>
   <h1>Gemma Aegis</h1>
-  <div class="muted">Static virus detectors are too slow/dumb. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.</div>
+  <div class="muted">Static virus detectors are too slow for modern data breaches. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.</div>
 </header>
 <main>
   <section class="panel">
@@ -575,12 +575,12 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run the Gemma 4 x Cerebras hackathon prep web demo")
+    parser = argparse.ArgumentParser(description="Run the Gemma Aegis web demo")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args(argv)
     httpd = ThreadingHTTPServer((args.host, args.port), Handler)
-    print(f"Gemma 4 prep UI: http://{args.host}:{args.port}")
+    print(f"Gemma Aegis UI: http://{args.host}:{args.port}")
     print(f"Benchmark log: {LOG_PATH}")
     try:
         httpd.serve_forever()

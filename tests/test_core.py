@@ -13,7 +13,7 @@ from types import SimpleNamespace
 from gemma_hack import server
 from gemma_hack.agents import AGENT_ROLES, build_agent_prompt, summarize_agent_results
 from gemma_hack.metrics import append_benchmark_record, extract_metrics, redact_secrets
-from gemma_hack.provider import ProviderResult, build_messages, load_project_env
+from gemma_hack.provider import ProviderResult, _friendly_cerebras_error, build_messages, load_project_env
 from gemma_hack.server import INDEX_HTML
 from scripts import smoke
 
@@ -77,7 +77,7 @@ class ProviderMessageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             env_path = Path(td) / ".env"
             env_path.write_text(
-                "CEREBRAS_API_KEY=csk-demo-key\n"
+                "\ufeffCEREBRAS_API_KEY=csk-demo-key\n"
                 "EXISTING_VALUE=from-file\n"
                 "QUOTED_VALUE='quoted text'\n",
                 encoding="utf-8",
@@ -93,6 +93,14 @@ class ProviderMessageTests(unittest.TestCase):
             finally:
                 for key in ("CEREBRAS_API_KEY", "EXISTING_VALUE", "QUOTED_VALUE"):
                     os.environ.pop(key, None)
+
+    def test_friendly_cerebras_error_labels_model_access_instead_of_key_failure(self):
+        err = Exception("Error code: 404 - {'code': 'model_not_found', 'message': 'Model gemma-4-31b does not exist or you do not have access to it.'}")
+        self.assertIn("Gemma model access failed", _friendly_cerebras_error(err))
+
+    def test_friendly_cerebras_error_labels_billing_required(self):
+        err = Exception("Error code: 402 - {'code': 'payment_required', 'message': 'Payment required to access this resource.'}")
+        self.assertIn("Cerebras billing required", _friendly_cerebras_error(err))
 
 
 class MetricsTests(unittest.TestCase):

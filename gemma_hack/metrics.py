@@ -1,4 +1,4 @@
-"""Benchmark and redaction helpers for the Gemma 4 hackathon prep app."""
+"""Benchmark and redaction helpers for the Gemma Aegis demo app."""
 
 from __future__ import annotations
 

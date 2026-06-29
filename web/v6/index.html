@@ -503,7 +503,7 @@ class Component extends DCLogic {
         timeline:{ accent:'#7fd0ff', stats:[['SIGNAL \u2192 BRIEF','50','s'],['EVENTS','6',''],['DATA SAVED','2.7','GB']], aside:{title:'Outcome', status:'resolved', lines:['Faster containment.','Evidence preserved.','Zero data left the perimeter.']} },
         telemetry:{ accent:'#7fd0ff', stats:[['STREAMS','5',''],['EVENTS / S','12.6','k'],['DROPPED','0','']], aside:{title:'Pipeline', status:'live', lines:['Five live streams.','Sub-second ingest.','Feeding all four agents.']} },
         evidence:{ accent:'#74e0a4', stats:[['ARTIFACTS','5',''],['REPORTS',String((this.state.reports||[]).length),''],['INTEGRITY','sealed','']], aside:{title:'Chain of custody', status:'preserved', lines:['Immutable snapshots.','Hashes verified.','Ready for IR & audit.']} },
-        settings:{ accent:'#7fd0ff', stats:[['MODEL','g4-31b',''],['AUTO-CONTAIN','on',''],['KEY','local','']], aside:{title:'Configuration', status:'saved', lines:['Local-first by design.','No data leaves the device.','Tune the swarm freely.']} }
+        settings:{ accent:'#7fd0ff', stats:[['MODEL','g4-31b',''],['PROXY','server',''],['KEY','hidden','']], aside:{title:'Configuration', status:'saved', lines:['Server-side Cerebras proxy.','Browser never receives the API key.','Demo telemetry is sanitized.']} }
       };
       const liveMeta = (this.state.liveState && this.state.liveState.meta) || {};
       Object.assign(META, liveMeta);

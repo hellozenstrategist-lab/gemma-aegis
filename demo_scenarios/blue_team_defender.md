@@ -5,7 +5,7 @@ Gemma Aegis
 Always-on blue-team defender swarm for enterprise data, powered by Gemma 4 31B on Cerebras.
 
 Core pitch:
-Static virus detectors are too slow/dumb. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.
+Static virus detectors are too slow for modern data breaches. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.
 
 Defender agents:
 - Data Sentinel — finds sensitive data at risk across DLP, SaaS, storage, and database telemetry.

@@ -15,7 +15,7 @@ BLUE_TEAM_SCENARIO_PATH = PROJECT_ROOT / "demo_scenarios" / "blue_team_defender.
 DATASHIELD_NAME = "Gemma Aegis"
 DATASHIELD_TAGLINE = "Always-on blue-team defender swarm for enterprise data, powered by Gemma 4 31B on Cerebras."
 DATASHIELD_CORE_PITCH = (
-    "Static virus detectors are too slow/dumb. Gemma Aegis watches identity, DLP, endpoint, "
+    "Static virus detectors are too slow for modern data breaches. Gemma Aegis watches identity, DLP, endpoint, "
     "SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach."
 )
 DATASHIELD_TELEMETRY_SOURCES = ["identity", "DLP", "endpoint", "SaaS", "storage"]

@@ -32,7 +32,7 @@ def load_project_env(path: str | Path = DEFAULT_ENV_PATH, *, override: bool = Fa
     if not env_path.exists():
         return loaded
     for raw_line in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
+        line = raw_line.lstrip("\ufeff").strip()
         if not line or line.startswith("#"):
             continue
         if line.startswith("export "):
@@ -120,6 +120,18 @@ def _completion_text(completion: Any) -> str:
     return content or ""
 
 
+def _friendly_cerebras_error(exc: Exception) -> str:
+    text = f"{type(exc).__name__}: {exc}"
+    lower = text.lower()
+    if "model_not_found" in lower or "does not exist or you do not have access" in lower:
+        return f"Gemma model access failed: {text}"
+    if "payment_required" in lower or "payment required" in lower:
+        return f"Cerebras billing required: {text}"
+    if "unauthorized" in lower or "authentication" in lower or "invalid api key" in lower or "401" in lower:
+        return f"Cerebras API key rejected: {text}"
+    return text
+
+
 def call_cerebras(
     prompt: str,
     *,
@@ -161,7 +173,7 @@ def call_cerebras(
         return ProviderResult("cerebras", chosen_model, _completion_text(completion), extract_metrics(completion, wall_ms=wall_ms))
     except Exception as exc:
         wall_ms = (time.perf_counter() - start) * 1000
-        return ProviderResult("cerebras", chosen_model, "", {"wall_ms": round(wall_ms, 3)}, f"{type(exc).__name__}: {exc}")
+        return ProviderResult("cerebras", chosen_model, "", {"wall_ms": round(wall_ms, 3)}, _friendly_cerebras_error(exc))
 
 
 def call_openai_compatible_baseline(
