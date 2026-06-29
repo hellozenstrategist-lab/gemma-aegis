@@ -94,6 +94,14 @@ The browser never receives the Cerebras API key. All Gemma calls go through the 
 
 The `datashield` route names are kept for compatibility with earlier demo agents.
 
+## UI Editing
+
+- Main judge demo UI: `web/v6/index.html`
+- Classic benchmark/control panel UI: `web/classic/index.html`
+- Static runtime/assets: `web/v6/support.js` and `web/v6/assets/`
+
+The `/classic` route reads `web/classic/index.html` directly, so UI/UX edits there are visible after a browser refresh.
+
 ## Safety And Privacy
 
 - Real API keys belong in `.env`, which is ignored by git.

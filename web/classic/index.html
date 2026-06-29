@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gemma Aegis — Cerebras Defender Swarm</title>
+  <style>
+    :root { color-scheme: dark; --bg:#080b10; --panel:#111827; --ink:#f8fafc; --muted:#94a3b8; --hot:#f97316; --good:#22c55e; --bad:#ef4444; --line:#273449; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; background: radial-gradient(circle at 15% 5%, #1f2937, #080b10 42%); color:var(--ink); }
+    header { padding:28px 36px 16px; border-bottom:1px solid var(--line); }
+    h1 { margin:0 0 8px; font-size: clamp(28px, 4vw, 48px); letter-spacing:-0.04em; }
+    .tag { color:var(--hot); font-weight:800; text-transform:uppercase; font-size:13px; letter-spacing:0.12em; }
+    main { padding:24px 36px 36px; display:grid; grid-template-columns: 430px 1fr; gap:22px; }
+    .panel { background:rgba(17,24,39,.92); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 18px 60px rgba(0,0,0,.22); }
+    label { display:block; color:var(--muted); font-size:13px; font-weight:700; margin:14px 0 7px; }
+    textarea, input, select { width:100%; background:#05070b; color:var(--ink); border:1px solid #334155; border-radius:12px; padding:12px; font:inherit; }
+    textarea { min-height:180px; resize:vertical; }
+    button { width:100%; margin-top:16px; border:0; border-radius:14px; padding:14px 16px; font-weight:900; color:#111827; background:linear-gradient(90deg,#f97316,#facc15); cursor:pointer; }
+    button.secondary { color:var(--ink); background:#0b1220; border:1px solid #334155; }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .providers { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .provider h2 { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 12px; }
+    .badge { font-size:12px; border:1px solid #334155; color:var(--muted); border-radius:999px; padding:5px 9px; }
+    pre { white-space:pre-wrap; word-break:break-word; background:#05070b; border:1px solid #263243; border-radius:14px; padding:14px; min-height:260px; }
+    .metrics { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:10px; margin-bottom:12px; }
+    .metric { background:#0b1220; border:1px solid #233047; border-radius:12px; padding:10px; }
+    .metric .n { font-size:22px; font-weight:900; }
+    .metric .k { color:var(--muted); font-size:12px; }
+    .ok { color:var(--good); } .err { color:var(--bad); } .muted { color:var(--muted); }
+    .small { font-size:12px; color:var(--muted); line-height:1.45; }
+    .demo-preview { width:100%; margin-top:10px; border:1px solid #334155; border-radius:12px; display:none; }
+    .callout { margin:12px 0 0; border:1px solid rgba(249,115,22,.55); background:rgba(249,115,22,.10); border-radius:14px; padding:11px 12px; color:#fed7aa; font-size:13px; line-height:1.45; }
+    .callout.warn { border-color:rgba(239,68,68,.62); background:rgba(239,68,68,.10); color:#fecaca; }
+    .agent-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; margin:12px 0; }
+    .agent-card { background:#0b1220; border:1px solid #233047; border-radius:14px; padding:12px; }
+    .agent-card strong { display:block; color:#facc15; margin-bottom:4px; }
+    @media (max-width: 1050px) { main { grid-template-columns:1fr; } .providers { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="tag">Always-on blue-team defender swarm</div>
+  <h1>Gemma Aegis</h1>
+  <div class="muted">Static virus detectors are too slow for modern data breaches. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.</div>
+</header>
+<main>
+  <section class="panel">
+    <h2>Aegis Input</h2>
+    <div class="callout"><strong>Powered by Gemma 4 31B on Cerebras.</strong> Watches identity, DLP, endpoint, SaaS, and storage telemetry in one defender swarm.</div>
+    <div class="agent-grid" aria-label="Gemma Aegis agents">
+      <div class="agent-card"><strong>Data Sentinel</strong><span class="small">Finds sensitive data at risk.</span></div>
+      <div class="agent-card"><strong>Identity Guardian</strong><span class="small">Catches OAuth, impossible travel, and account abuse.</span></div>
+      <div class="agent-card"><strong>Endpoint Hunter</strong><span class="small">Links EDR and workstation behavior.</span></div>
+      <div class="agent-card"><strong>Response Orchestrator</strong><span class="small">Builds containment, evidence, and exec brief.</span></div>
+    </div>
+    <label>Prompt / scenario</label>
+    <textarea id="prompt">Gemma Aegis telemetry: finance admin impossible travel, malicious OAuth grant, S3 export spike, DLP payroll/bank-account staging, PowerShell download cradle, lateral RDP with service account. Return data at risk, attack chain, containment, evidence, and exec brief.</textarea>
+    <button id="loadScenario" type="button">Load curated 60-second scenario</button>
+    <button id="loadBlueTeamScenario" type="button">Load Aegis exfil demo</button>
+    <label>Optional image URL</label>
+    <input id="imageUrl" placeholder="https://... screenshot.png" />
+    <label>Or upload local screenshot (converted to base64 data URI; never written to disk)</label>
+    <input id="imageFile" type="file" accept="image/*" />
+    <div class="row">
+      <button id="loadDemoImage" type="button">Attach sanitized demo screenshot</button>
+      <button id="clearDemoImage" type="button" class="secondary">Clear image</button>
+    </div>
+    <div id="demoImageStatus" class="small">No sanitized demo screenshot attached.</div>
+    <img id="demoImagePreview" class="demo-preview" alt="sanitized demo screenshot preview" />
+    <div class="row">
+      <div><label>Reasoning</label><select id="reasoning"><option>none</option><option>low</option><option>medium</option><option>high</option></select></div>
+      <div><label>Max tokens / agent</label><input id="tokens" type="number" value="768" min="64" max="2048" /></div>
+    </div>
+    <div class="row">
+      <div><label>Run mode</label><select id="mode"><option value="defender">Aegis defender swarm</option><option value="council">4-agent incident council</option><option value="single">single fast answer</option></select></div>
+      <div><label>Model</label><input id="model" value="gemma-4-31b" /></div>
+    </div>
+    <div id="contestPrimaryBanner" class="callout" role="status"><strong>gemma-4-31b is the only product evidence model.</strong> Non-Gemma runs are SDK/key health checks only, not submission evidence. If Gemma 4 returns 404/no access, mark <code>BLOCKED_ON_GEMMA_ACCESS</code> and keep local prep moving.</div>
+    <div id="modelModeBanner" class="callout" role="status">Product mode: Gemma 4 primary.</div>
+    <div id="recordingChecklist" class="callout" role="note"><strong>60-second recording checklist</strong><br />0-5s: problem. 5-20s: run Gemma 4 on Cerebras. 20-35s: show multi-agent output and metrics. 35-50s: optional baseline. 50-60s: enterprise impact. Capture this in the demo video.</div>
+    <label><input id="compare" type="checkbox" style="width:auto" /> Run optional baseline too</label>
+    <button id="run">Run Aegis swarm</button>
+    <p class="small">Env: <code>CEREBRAS_API_KEY</code> required. Optional baseline: <code>BASELINE_OPENAI_BASE_URL</code>, <code>BASELINE_OPENAI_API_KEY</code>, <code>BASELINE_MODEL</code>. Logs go to <code>logs/benchmarks.jsonl</code> with API keys redacted.</p>
+  </section>
+  <section class="providers">
+    <div class="panel provider">
+      <h2>Cerebras / Gemma <span id="cStatus" class="badge">idle</span></h2>
+      <div id="cMetrics" class="metrics"></div>
+      <pre id="cOut">Waiting.</pre>
+    </div>
+    <div class="panel provider">
+      <h2>Baseline <span id="bStatus" class="badge">optional</span></h2>
+      <div id="bMetrics" class="metrics"></div>
+      <pre id="bOut">Set baseline env vars or leave disabled.</pre>
+    </div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const PRIMARY_MODEL = 'gemma-4-31b';
+const DATASHIELD_BRIEF_ENDPOINT = '/api/datashield-brief';
+let sampleImageDataUri = null;
+function isGemmaAccessError(text) {
+  return String(text || '').includes('does not exist or you do not have access') || String(text || '').includes('model_not_found');
+}
+function updateModelModeBanner() {
+  const model = ($('model').value || PRIMARY_MODEL).trim();
+  const banner = $('modelModeBanner');
+  if (!banner) return;
+  if (model === PRIMARY_MODEL) {
+    banner.className = 'callout';
+    banner.textContent = 'Product mode: Gemma 4 primary. A 404/no-access response means BLOCKED_ON_GEMMA_ACCESS, not a failed product demo.';
+  } else {
+    banner.className = 'callout warn';
+    banner.textContent = `Health-check mode only: ${model} output is not Gemma 4 product validation or submission evidence.`;
+  }
+}
+function metricHtml(m) {
+  const ti = m.time_info || {};
+  const ms = m.wall_ms ?? '—';
+  const tps = ti.tokens_per_second ?? ti.output_tokens_per_second ?? ti.tokens_per_sec ?? '—';
+  const ttft = ti.time_to_first_token ?? ti.ttft ?? '—';
+  return [
+    ['wall ms', ms], ['tok/s', tps], ['TTFT', ttft], ['total toks', m.total_tokens ?? '—']
+  ].map(([k,v]) => `<div class="metric"><div class="n">${v}</div><div class="k">${k}</div></div>`).join('');
+}
+function readFileDataUri(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+function clearDemoImageAttachment() {
+  const status = $('demoImageStatus');
+  const preview = $('demoImagePreview');
+  sampleImageDataUri = null;
+  $('imageFile').value = '';
+  preview.src = '';
+  preview.style.display = 'none';
+  status.textContent = 'No sanitized demo screenshot attached.';
+}
+function setDemoImageAttachment(dataUri) {
+  const status = $('demoImageStatus');
+  const preview = $('demoImagePreview');
+  sampleImageDataUri = dataUri || null;
+  preview.src = sampleImageDataUri || '';
+  preview.style.display = sampleImageDataUri ? 'block' : 'none';
+  status.textContent = sampleImageDataUri ? 'Attached sanitized demo screenshot as data URI.' : 'No sanitized demo screenshot attached.';
+}
+$('loadScenario').onclick = async () => {
+  const button = $('loadScenario');
+  button.disabled = true;
+  try {
+    const res = await fetch('/api/demo-scenario');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    $('prompt').value = data.scenario || '';
+    $('mode').value = 'council';
+  } catch (e) {
+    $('prompt').value = `${$('prompt').value}
+
+[Could not load curated scenario: ${e}]`;
+  } finally {
+    button.disabled = false;
+  }
+};
+$('loadBlueTeamScenario').onclick = async () => {
+  const button = $('loadBlueTeamScenario');
+  button.disabled = true;
+  try {
+    const res = await fetch('/api/blue-team-scenario');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    $('prompt').value = data.scenario || '';
+    $('mode').value = 'defender';
+  } catch (e) {
+    $('prompt').value = `${$('prompt').value}
+
+[Could not load blue-team scenario: ${e}]`;
+  } finally {
+    button.disabled = false;
+  }
+};
+$('loadDemoImage').onclick = async () => {
+  const button = $('loadDemoImage');
+  const status = $('demoImageStatus');
+  button.disabled = true;
+  try {
+    const res = await fetch('/api/demo-image');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    setDemoImageAttachment(data.image_data_uri || null);
+  } catch (e) {
+    clearDemoImageAttachment();
+    status.textContent = `Could not attach sanitized demo screenshot: ${e}`;
+  } finally {
+    button.disabled = false;
+  }
+};
+$('clearDemoImage').onclick = clearDemoImageAttachment;
+$('run').onclick = async () => {
+  $('run').disabled = true; $('cStatus').textContent='running'; $('bStatus').textContent='running';
+  $('cOut').textContent='Running...'; $('bOut').textContent='Running...'; $('cMetrics').innerHTML=''; $('bMetrics').innerHTML='';
+  try {
+    const imageDataUri = await readFileDataUri($('imageFile').files[0]);
+    const effectiveImageUrl = $('imageUrl').value || null;
+    const effectiveImageDataUri = effectiveImageUrl ? null : (imageDataUri || sampleImageDataUri);
+    const started = performance.now();
+    const res = await fetch('/api/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+      prompt: $('prompt').value,
+      image_url: effectiveImageUrl,
+      image_data_uri: effectiveImageDataUri,
+      compare_baseline: $('compare').checked,
+      reasoning_effort: $('reasoning').value,
+      max_completion_tokens: Number($('tokens').value || 768),
+      mode: $('mode').value,
+      model: $('model').value || null
+    })});
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      const topLevelError = data.error || `HTTP ${res.status}`;
+      $('cStatus').textContent = 'request error';
+      $('cStatus').className = 'badge err';
+      $('cOut').textContent = topLevelError;
+      $('cMetrics').innerHTML = '';
+      $('bStatus').textContent = 'skipped';
+      $('bStatus').className = 'badge';
+      $('bOut').textContent = '(skipped)';
+      $('bMetrics').innerHTML = '';
+      return;
+    }
+    const primary = data.council || data.cerebras || {};
+    const primaryError = data.cerebras?.error || (data.council?.errors || []).join('\n');
+    const selectedModel = ($('model').value || PRIMARY_MODEL).trim();
+    const blockedOnGemma = primaryError && selectedModel === PRIMARY_MODEL && isGemmaAccessError(primaryError);
+    $('cStatus').textContent = blockedOnGemma ? 'BLOCKED_ON_GEMMA_ACCESS' : (primaryError ? 'error' : 'done');
+    $('cStatus').className = 'badge ' + (primaryError ? 'err' : 'ok');
+    $('cOut').textContent = blockedOnGemma ? `BLOCKED_ON_GEMMA_ACCESS
+${primaryError}` : (primaryError || primary.combined_brief || primary.output || '(empty)');
+    $('cMetrics').innerHTML = metricHtml(primary.metrics || {wall_ms: primary.total_wall_ms, total_tokens: primary.total_tokens});
+    $('bStatus').textContent = data.baseline?.error ? 'disabled/error' : (data.baseline ? 'done' : 'skipped');
+    $('bStatus').className = 'badge ' + (data.baseline?.error ? 'err' : 'ok');
+    $('bOut').textContent = data.baseline?.error || data.baseline?.output || '(skipped)';
+    $('bMetrics').innerHTML = metricHtml(data.baseline?.metrics || {});
+    console.log('browser wall ms', performance.now() - started, data);
+  } catch (e) {
+    $('cStatus').textContent='client error'; $('cStatus').className='badge err'; $('cOut').textContent=String(e);
+  } finally { $('run').disabled = false; }
+};
+$('model').addEventListener('input', updateModelModeBanner);
+updateModelModeBanner();
+</script>
+</body>
+</html>

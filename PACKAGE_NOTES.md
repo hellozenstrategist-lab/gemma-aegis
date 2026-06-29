@@ -5,6 +5,7 @@ Sanitized package for the current Gemma Aegis v6 product.
 ## Included
 - `gemma_hack/` backend and server-side Gemma 4 proxy.
 - `web/v6/` UI/UX shell, runtime, Aegis core, and emotes.
+- `web/classic/` editable benchmark/control-panel UI.
 - `tests/` unit and route coverage using fake redaction fixtures only.
 - `scripts/`, `demo_scenarios/`, sanitized assets, README, requirements.
 - `.env.example`, `.gitignore`, `SECURITY.md`, and run helpers.

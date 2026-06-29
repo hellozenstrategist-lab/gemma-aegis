@@ -224,6 +224,14 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn("preview.style.display = 'none'", INDEX_HTML)
         self.assertIn("$('imageFile').value = ''", INDEX_HTML)
 
+    def test_classic_ui_is_editable_from_web_folder(self):
+        classic_path = server.PROJECT_ROOT / "web" / "classic" / "index.html"
+        self.assertTrue(classic_path.is_file())
+        html = server.load_classic_index_html()
+        self.assertIn("Aegis Input", html)
+        self.assertIn('id="loadBlueTeamScenario"', html)
+        self.assertEqual(server.INDEX_HTML, html)
+
     def test_v6_ui_routes_classic_slash_command_locally(self):
         html = server.load_v6_index_html()
         self.assertIn("/^\\/classic\\/?$/.test(low)", html)
