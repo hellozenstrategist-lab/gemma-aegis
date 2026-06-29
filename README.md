@@ -13,6 +13,16 @@ Static security tools are good at matching known signatures. Gemma Aegis is buil
 5. Open `/classic`, click **Load Aegis exfil demo**, and run the **Aegis defender swarm** mode.
 6. Review the defender output, latency metrics, Evidence Vault, and executive brief.
 
+## Controls
+
+- Click anywhere on the main screen, then type to talk directly to Gemma.
+- Press `Enter` to send a message. Press `Escape` or click outside the composer to close it.
+- Click the floating Gemma core to open the quick-access menu.
+- Use commands such as `go to telemetry`, `open evidence`, `show containment`, or `go to settings` to change pages.
+- Use commands such as `close incident report`, `open incident report`, `close incident log`, or `show the log` to control the floating incident panel.
+- Double-click the screen where you want Gemma to move.
+- Double-click the floating Gemma core to pick it up, move the mouse, then click once to drop it.
+
 ## Demo Pitch
 
 **Problem:** enterprise breaches are rarely one clean alert. They are a messy chain across identity, endpoint, SaaS, DLP, and storage.
