@@ -37,9 +37,5 @@ web/v6/assets/emotes/excited.png
 web/v6/assets/emotes/happy.png
 web/v6/assets/emotes/love.png
 web/v6/assets/emotes/sad.png
-web/v6/assets/portfolio/example.png
-web/v6/assets/portfolio/hero-field.png
-web/v6/assets/portfolio/loading.png
-web/v6/assets/portfolio/me.png
 web/v6/index.html
 web/v6/support.js

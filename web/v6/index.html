@@ -1,686 +1,618 @@
-<!doctype html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gemma Aegis — Premium Defender Portfolio</title>
-  <script src="/v6/support.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      color-scheme: dark;
-      --red:#dc0000;
-      --red-soft:rgba(220,0,0,.18);
-      --red-line:rgba(220,0,0,.55);
-      --paper:#f2f0ea;
-      --paper-dim:rgba(242,240,234,.72);
-      --ink:#050505;
-      --black:#050505;
-      --charcoal:#101010;
-      --muted:rgba(242,240,234,.58);
-      --line:rgba(242,240,234,.14);
-      --glass:rgba(8,8,8,.72);
-      --z-loader:70;
-      --z-menu:50;
-      --z-command:60;
-    }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body {
-      margin:0;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:var(--black);
-      color:var(--paper);
-      overflow-x:hidden;
-      -webkit-font-smoothing:antialiased;
-    }
-    button, a, input { font:inherit; }
-    button, a { cursor:pointer; }
-    a { color:inherit; text-decoration:none; }
-    .loader {
-      position:fixed;
-      inset:0;
-      z-index:var(--z-loader);
-      display:grid;
-      place-items:center;
-      background:var(--red);
-      transition:opacity .55s ease, visibility .55s ease;
-    }
-    .loader.hide { opacity:0; visibility:hidden; pointer-events:none; }
-    .loader img { width:min(540px, 72vw); filter:drop-shadow(0 18px 28px rgba(0,0,0,.2)); }
-    .loader .bar { position:absolute; left:8vw; right:8vw; bottom:42px; height:2px; background:rgba(0,0,0,.28); overflow:hidden; }
-    .loader .bar::after { content:""; display:block; width:38%; height:100%; background:var(--black); animation:loadbar 1.05s cubic-bezier(.2,.7,.2,1) both; }
-    .site-shell { min-height:100vh; background:linear-gradient(180deg,#070707 0%,#111 42%,#050505 100%); }
-    .topbar {
-      position:fixed;
-      left:0;
-      right:0;
-      top:0;
-      z-index:40;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:22px clamp(18px,4vw,54px);
-      color:var(--paper);
-      mix-blend-mode:difference;
-      pointer-events:none;
-    }
-    .topbar a, .topbar button { pointer-events:auto; }
-    .mini-link {
-      border:0;
-      background:transparent;
-      color:inherit;
-      font-size:11px;
-      font-weight:800;
-      letter-spacing:.26em;
-      text-transform:uppercase;
-      padding:10px 0;
-    }
-    .brand-mark { display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.2em; font-size:12px; text-transform:uppercase; }
-    .brand-mark img { width:34px; height:34px; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,255,255,.22)); }
-    .hero {
-      min-height:100svh;
-      position:relative;
-      isolation:isolate;
-      display:grid;
-      place-items:center;
-      padding:88px clamp(18px,4vw,56px) 40px;
-      overflow:hidden;
-      border-bottom:1px solid var(--line);
-    }
-    .hero-bg {
-      position:absolute;
-      inset:0;
-      z-index:-3;
-      background:url('/v6/assets/portfolio/hero-field.png') center/cover no-repeat;
-      filter:saturate(.82) contrast(1.08);
-    }
-    .hero::before {
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:-2;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.12) 32%, rgba(0,0,0,.18) 68%, rgba(0,0,0,.76)),
-        linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.88));
-    }
-    .hero::after {
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:-1;
-      background:repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 6px);
-      opacity:.18;
-      pointer-events:none;
-    }
-    .hero-grid {
-      width:min(1280px,100%);
-      min-height:calc(100svh - 128px);
-      display:grid;
-      grid-template-rows:1fr auto;
-      align-items:center;
-      position:relative;
-    }
-    .hero-title {
-      margin:0;
-      text-align:center;
-      color:var(--red);
-      font-size:clamp(64px,15vw,210px);
-      line-height:.78;
-      letter-spacing:-.085em;
-      font-weight:900;
-      text-transform:uppercase;
-      text-shadow:0 18px 50px rgba(0,0,0,.46);
-    }
-    .hero-person {
-      position:absolute;
-      left:50%;
-      top:50%;
-      width:min(510px,48vw);
-      transform:translate(-50%,-43%);
-      filter:drop-shadow(0 28px 54px rgba(0,0,0,.74));
-      pointer-events:none;
-    }
-    .hero-meta {
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      gap:18px;
-      align-items:end;
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:rgba(242,240,234,.82);
-    }
-    .hero-meta span:nth-child(2) { color:var(--red); font-weight:800; }
-    .hero-meta span:last-child { text-align:right; }
-    .dragon {
-      position:absolute;
-      top:68px;
-      left:50%;
-      width:90px;
-      height:54px;
-      transform:translateX(-50%);
-      color:var(--red);
-    }
-    .dragon svg { width:100%; height:100%; filter:drop-shadow(0 0 14px rgba(220,0,0,.42)); }
-    .section {
-      padding:clamp(66px,9vw,126px) clamp(18px,4vw,56px);
-      position:relative;
-    }
-    .featured {
-      background:#050505;
-      border-bottom:1px solid var(--line);
-    }
-    .featured-frame {
-      width:min(1280px,100%);
-      margin:0 auto;
-      position:relative;
-      min-height:min(68vw,640px);
-      overflow:hidden;
-      border:1px solid rgba(242,240,234,.16);
-      background:#070707;
-    }
-    .featured-frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.72; filter:saturate(.74) contrast(1.08); }
-    .featured-frame::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.18),rgba(0,0,0,.72)); }
-    .featured-copy {
-      position:absolute;
-      inset:0;
-      z-index:2;
-      display:grid;
-      grid-template-columns:90px 1fr minmax(240px,360px);
-      align-items:center;
-      gap:32px;
-      padding:clamp(22px,4vw,54px);
-    }
-    .index-num { color:var(--red); font-weight:900; letter-spacing:.18em; align-self:center; }
-    .work-title {
-      margin:0;
-      color:var(--red);
-      font-size:clamp(42px,7vw,116px);
-      line-height:.86;
-      letter-spacing:-.06em;
-      text-transform:uppercase;
-      max-width:820px;
-    }
-    .work-desc { color:var(--paper-dim); line-height:1.65; font-size:15px; }
-    .cta-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
-    .btn {
-      min-height:44px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--paper);
-      padding:12px 16px;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-size:11px;
-      font-weight:800;
-      transition:background .2s ease, border-color .2s ease, transform .2s ease;
-    }
-    .btn:hover { transform:translateY(-2px); border-color:var(--red-line); background:var(--red-soft); }
-    .btn.primary { background:var(--red); color:#fff; border-color:var(--red); }
-    .portfolio {
-      background:var(--paper);
-      color:var(--ink);
-      min-height:100svh;
-    }
-    .section-head {
-      max-width:1260px;
-      margin:0 auto 30px;
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:24px;
-    }
-    .eyebrow { font-size:11px; font-weight:900; letter-spacing:.24em; text-transform:uppercase; color:var(--red); }
-    .section-head h2 {
-      margin:8px 0 0;
-      font-size:clamp(42px,8vw,118px);
-      line-height:.86;
-      letter-spacing:-.075em;
-      text-transform:uppercase;
-    }
-    .portfolio-grid {
-      max-width:1260px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-    }
-    .project-card {
-      border:1px solid rgba(0,0,0,.14);
-      background:#fff;
-      color:var(--ink);
-      min-height:420px;
-      display:flex;
-      flex-direction:column;
-      transition:transform .2s ease, box-shadow .2s ease;
-    }
-    .project-card:hover { transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,.16); }
-    .project-card img { width:100%; aspect-ratio:1.35; object-fit:cover; border-bottom:1px solid rgba(0,0,0,.12); }
-    .project-card div { padding:18px; }
-    .project-card h3 { margin:0 0 12px; font-size:25px; letter-spacing:-.04em; text-transform:uppercase; }
-    .project-card p { margin:0; color:rgba(0,0,0,.62); line-height:1.55; }
-    .surface {
-      display:none;
-      min-height:100svh;
-      background:var(--paper);
-      color:var(--ink);
-      padding:100px clamp(18px,4vw,56px);
-    }
-    .surface.active { display:block; }
-    .surface-inner { max-width:1180px; margin:0 auto; }
-    .back-link { border:0; background:transparent; color:var(--red); font-size:11px; font-weight:900; letter-spacing:.22em; text-transform:uppercase; padding:0 0 28px; }
-    .surface h2 { margin:0; max-width:850px; color:var(--red); font-size:clamp(52px,10vw,132px); line-height:.82; letter-spacing:-.08em; text-transform:uppercase; }
-    .surface p.lead { max-width:720px; margin:24px 0 40px auto; color:rgba(0,0,0,.68); line-height:1.65; }
-    .signal-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-    .signal { border:1px solid rgba(0,0,0,.16); background:#fff; padding:18px; min-height:124px; }
-    .signal strong { display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:.08em; }
-    .signal span { color:rgba(0,0,0,.62); line-height:1.55; }
-    .footer {
-      min-height:58svh;
-      background:var(--red);
-      color:var(--black);
-      display:grid;
-      align-content:space-between;
-      padding:34px clamp(18px,4vw,56px);
-    }
-    .footer-top { display:flex; justify-content:space-between; gap:24px; font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
-    .footer h2 { margin:50px 0; text-align:center; font-size:clamp(74px,20vw,246px); line-height:.72; letter-spacing:-.09em; text-transform:uppercase; }
-    .footer-bottom { display:flex; justify-content:space-between; gap:24px; font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
-    .mascot {
-      position:fixed;
-      right:24px;
-      bottom:24px;
-      z-index:var(--z-menu);
-      width:96px;
-      height:96px;
-      border:0;
-      background:transparent;
-      padding:0;
-      filter:drop-shadow(0 22px 38px rgba(0,0,0,.55));
-    }
-    .mascot img { width:100%; height:100%; object-fit:contain; }
-    .jump-menu {
-      position:fixed;
-      right:24px;
-      bottom:132px;
-      z-index:var(--z-menu);
-      width:270px;
-      padding:12px;
-      border:1px solid var(--line);
-      background:rgba(5,5,5,.88);
-      backdrop-filter:blur(12px);
-      opacity:0;
-      pointer-events:none;
-      transform:translateY(8px);
-      transition:opacity .18s ease, transform .18s ease;
-    }
-    .jump-menu.open { opacity:1; pointer-events:auto; transform:translateY(0); }
-    .jump-menu button {
-      width:100%;
-      min-height:42px;
-      border:0;
-      background:transparent;
-      color:var(--paper);
-      text-align:left;
-      padding:10px;
-      text-transform:uppercase;
-      letter-spacing:.11em;
-      font-size:11px;
-      font-weight:800;
-    }
-    .jump-menu button:hover { background:var(--red-soft); color:#fff; }
-    .composer {
-      position:fixed;
-      inset:0;
-      z-index:var(--z-command);
-      display:grid;
-      place-items:center;
-      background:rgba(0,0,0,.58);
-      backdrop-filter:blur(8px);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .18s ease;
-    }
-    .composer.open { opacity:1; pointer-events:auto; }
-    .composer-box {
-      width:min(720px,calc(100vw - 28px));
-      border:1px solid var(--line);
-      background:rgba(7,7,7,.94);
-      padding:16px;
-    }
-    .chat-log { max-height:260px; overflow:auto; color:var(--paper-dim); font-size:14px; line-height:1.55; margin-bottom:12px; white-space:pre-wrap; }
-    .composer-line { display:flex; align-items:center; gap:12px; }
-    .composer-line img { width:40px; height:40px; object-fit:contain; }
-    .composer-line input { flex:1; min-height:48px; border:0; outline:0; background:transparent; color:var(--paper); font-size:18px; }
-    .send { width:46px; height:46px; border:1px solid var(--red-line); background:var(--red-soft); color:#fff; font-weight:900; }
-    @keyframes loadbar { from { transform:translateX(-110%); } to { transform:translateX(185%); } }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation:none !important; scroll-behavior:auto !important; transition:none !important; }
-    }
-    @media (max-width:900px) {
-      .topbar { mix-blend-mode:normal; background:linear-gradient(180deg,rgba(0,0,0,.72),transparent); }
-      .hero-person { width:min(420px,72vw); opacity:.88; }
-      .hero-meta { grid-template-columns:1fr; text-align:center; align-items:center; }
-      .hero-meta span:last-child { text-align:center; }
-      .featured-copy { grid-template-columns:1fr; align-content:end; background:linear-gradient(180deg,transparent,rgba(0,0,0,.88)); }
-      .portfolio-grid, .signal-list { grid-template-columns:1fr; }
-      .section-head { display:block; }
-      .project-card { min-height:0; }
-      .footer-top, .footer-bottom { flex-direction:column; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma Aegis — v6</title>
+<script src="/v6/support.js"></script>
 </head>
 <body>
-  <div id="loader" class="loader" aria-label="Loading Gemma Aegis">
-    <img src="/v6/assets/portfolio/loading.png" alt="Gemma Aegis loading mark" />
-    <div class="bar"></div>
-  </div>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  @keyframes spinSlow { to { transform: rotate(360deg); } }
+  @keyframes spinRev { to { transform: rotate(-360deg); } }
+  @keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1);} 50% { opacity:.3; transform:scale(.62);} }
+  @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); opacity:.85; } 50% { transform: translate(-22px,18px) scale(1.08); opacity:1; } }
+  @keyframes driftB { 0%,100% { transform: translate(0,0) scale(1); opacity:.6; } 50% { transform: translate(26px,-14px) scale(1.12); opacity:.85; } }
+  @keyframes twinkle { 0%,100% { opacity:.35; } 50% { opacity:.75; } }
+  @keyframes flick { 0%,100% { opacity:.5; } 40% { opacity:1; } 70% { opacity:.7; } }
+  @keyframes emotePop { 0% { opacity:.5; transform:translateY(8px) scale(.62) rotate(-6deg); } 60% { opacity:1; transform:translateY(-4px) scale(1.12) rotate(3deg); } 100% { opacity:1; transform:translateY(0) scale(1) rotate(0deg); } }
+  @keyframes emoteBob { 0%,100% { transform:translateY(0) rotate(-1.5deg); } 50% { transform:translateY(-7px) rotate(1.5deg); } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+  @keyframes logoFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+  @keyframes fl1 { 0%,100% { transform:translate(0,0) rotate(0deg); } 33% { transform:translate(26px,-34px) rotate(8deg); } 66% { transform:translate(-20px,20px) rotate(-6deg); } }
+  @keyframes fl2 { 0%,100% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(-30px,-24px) rotate(-10deg); } }
+  @keyframes fl3 { 0%,100% { transform:translate(0,0) rotate(0deg); } 40% { transform:translate(22px,28px) rotate(7deg); } 80% { transform:translate(-24px,-14px) rotate(-5deg); } }
+  @media (prefers-reduced-motion: reduce){ *{ animation: none !important; } }
+</style>
+</helmet>
 
-  <div class="site-shell" id="app">
-    <nav class="topbar" aria-label="Primary navigation">
-      <button class="mini-link" data-jump="contact">Contacts</button>
-      <div class="brand-mark"><img src="/v6/assets/aegis-core.png" alt="" />Gemma Aegis</div>
-      <button class="mini-link" data-jump="menu">Menu</button>
-    </nav>
+<div data-screen-label="Boxless main" style="position:relative; width:1440px; height:980px; background:#000; overflow:hidden; font-family:'Chakra Petch',sans-serif;">
 
-    <main id="homeView">
-      <section class="hero" id="hero">
-        <div class="hero-bg"></div>
-        <div class="dragon" aria-hidden="true">
-          <svg viewBox="0 0 120 72" fill="none"><path d="M60 8c18 8 31 4 44 0-9 12-20 19-34 19 19 7 31 18 38 35-17-11-35-14-54-7-19 7-32 2-42-15 14 6 28 5 42-4-15-8-25-17-30-28 14 8 25 11 36 0Z" fill="currentColor"/></svg>
-        </div>
-        <div class="hero-grid">
-          <h1 class="hero-title">Gemma<br>Aegis</h1>
-          <img class="hero-person" src="/v6/assets/portfolio/me.png" alt="Gemma Aegis operator avatar" />
-          <div class="hero-meta">
-            <span>Always-on blue-team defender swarm</span>
-            <span>Gemma 4 on Cerebras</span>
-            <span>Identity / DLP / Endpoint / SaaS / Storage</span>
-          </div>
-        </div>
-      </section>
+  <!-- ===== atmosphere ===== -->
+  <!-- starfield / dust -->
+  <div style="position:absolute; inset:0; background-image:radial-gradient(1.3px 1.3px at 40px 60px, rgba(255,255,255,.55), transparent 100%), radial-gradient(1px 1px at 180px 120px, rgba(255,255,255,.4), transparent 100%), radial-gradient(1px 1px at 280px 220px, rgba(255,255,255,.32), transparent 100%), radial-gradient(1.6px 1.6px at 120px 300px, rgba(255,255,255,.28), transparent 100%), radial-gradient(1px 1px at 330px 360px, rgba(255,255,255,.38), transparent 100%); background-repeat:repeat; background-size:380px 380px; opacity:.5; animation:twinkle 6s ease-in-out infinite;"></div>
 
-      <section class="section featured" id="featured">
-        <div class="featured-frame">
-          <img src="/v6/assets/portfolio/example.png" alt="Gemma Aegis defender console preview" />
-          <div class="featured-copy">
-            <div class="index-num">01</div>
-            <h2 class="work-title">A tabletop becomes containment.</h2>
-            <div class="work-desc">
-              <p>Static virus detectors are too slow for modern data breaches. Gemma Aegis watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates defender agents to stop data exfiltration before breach.</p>
-              <div class="cta-row">
-                <button class="btn primary" id="runDemo">Run Aegis swarm</button>
-                <a class="btn" href="/classic">Open classic console</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+  <!-- luminous plume behind core -->
+  <div style="position:absolute; right:60px; top:-120px; width:760px; height:900px; pointer-events:none; background:radial-gradient(42% 50% at 56% 36%, rgba(214,230,255,.20), transparent 70%), radial-gradient(26% 30% at 60% 22%, rgba(255,255,255,.22), transparent 70%); filter:blur(46px); animation:drift 16s ease-in-out infinite;"></div>
+  <div style="position:absolute; right:200px; top:40px; width:420px; height:680px; pointer-events:none; background:radial-gradient(36% 44% at 50% 40%, rgba(180,205,255,.16), transparent 72%); filter:blur(60px); animation:driftB 20s ease-in-out infinite;"></div>
+  <!-- vertical light filament echoing the reference -->
+  <div style="position:absolute; right:392px; top:-40px; width:120px; height:560px; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,0), rgba(225,238,255,.5) 22%, rgba(255,255,255,.16) 55%, transparent 92%); filter:blur(30px); opacity:.7; animation:flick 7s ease-in-out infinite;"></div>
+  <!-- bright knot -->
+  <div style="position:absolute; right:430px; top:80px; width:60px; height:60px; pointer-events:none; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.9), transparent 70%); filter:blur(8px); animation:flick 5s ease-in-out infinite;"></div>
+  <!-- bottom vignette -->
+  <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 80% at 50% 120%, rgba(0,0,0,.7), transparent 60%);"></div>
 
-      <section class="section portfolio" id="portfolio">
-        <div class="section-head">
-          <div><div class="eyebrow">Portfolio of defenses</div><h2>Selected surfaces</h2></div>
-          <button class="btn" data-open-composer>Talk to Gemma</button>
-        </div>
-        <div class="portfolio-grid">
-          <button class="project-card" data-surface="swarm"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Defender swarm</h3><p>Four Gemma agents correlate enterprise telemetry and converge on the attack chain.</p></div></button>
-          <button class="project-card" data-surface="containment"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Containment plan</h3><p>Revokes OAuth, disables sessions, freezes export keys, and isolates the workstation.</p></div></button>
-          <button class="project-card" data-surface="timeline"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Incident timeline</h3><p>A sixty-second story from first signal to executive-ready response.</p></div></button>
-          <button class="project-card" data-surface="telemetry"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Telemetry intake</h3><p>Identity, DLP, endpoint, SaaS, and storage streams entering one defender loop.</p></div></button>
-          <button class="project-card" data-surface="evidence"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Evidence vault</h3><p>Immutable artifacts sealed for incident response, audit, and leadership review.</p></div></button>
-          <button class="project-card" data-surface="brief"><img src="/v6/assets/portfolio/example.png" alt="" /><div><h3>Exec brief</h3><p>What happened, what was contained, and why it matters to the business.</p></div></button>
-        </div>
-      </section>
-    </main>
+  <!-- floating Gemma swarm — one per active defender agent -->
+  <div style="position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden;">{{ floaters }}</div>
 
-    <section id="surfaceView" class="surface" aria-live="polite">
-      <div class="surface-inner">
-        <button class="back-link" id="backHome">Back to portfolio</button>
-        <h2 id="surfaceTitle">Defender swarm</h2>
-        <p class="lead" id="surfaceLead">Four defender agents on watch.</p>
-        <div class="signal-list" id="surfaceRows"></div>
+  <!-- ===== content ===== -->
+  <div style="position:relative; z-index:5; height:100%; padding:46px 56px 40px; display:flex; flex-direction:column;">
+
+    <!-- header -->
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <img src="/v6/assets/aegis-core.png" alt="" style="width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(150,190,255,.5));">
+        <span style="font-family:'Chakra Petch',sans-serif; font-size:12px; letter-spacing:.34em; color:rgba(225,234,248,.72);">GEMMA AEGIS</span>
       </div>
-    </section>
+      <div style="display:flex; align-items:center; gap:30px;">
+        <span style="font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.2em; color:rgba(180,200,230,.55);">GEMMA 4 · 31B ON CEREBRAS</span>
+        <div style="display:flex; align-items:center; gap:9px; color:#eaf2ff; cursor:pointer;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="filter:drop-shadow(0 0 6px rgba(150,190,255,.7));"><path d="M8 5v14l11-7z"></path></svg>
+          <span style="font-family:'Chakra Petch',sans-serif; font-size:14px; font-weight:500; letter-spacing:.01em;">Run 60-second demo</span>
+        </div>
+      </div>
+    </div>
 
-    <footer class="footer" id="contact">
-      <div class="footer-top"><span>Contacts</span><span>Book a demo</span></div>
-      <h2>Gemma Aegis</h2>
-      <div class="footer-bottom"><span>Gemma 4 defender swarm</span><span>Cerebras latency loop</span><span>Credits</span></div>
-    </footer>
-  </div>
+    <!-- status line -->
+    <div style="display:flex; align-items:center; gap:22px; margin-top:30px; font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.12em; color:rgba(200,214,238,.5);">
+      <span style="color:#76e0a6;">● THREAT LEVEL · NOMINAL</span>
+      <span style="opacity:.4;">/</span>
+      <span>UPTIME 99.99%</span>
+      <span style="opacity:.4;">/</span>
+      <span>AUTO-CONTAIN <span style="color:#9fdcff;">ON</span></span>
+      <span style="opacity:.4;">/</span>
+      <span>EVIDENCE PRESERVED</span>
+    </div>
 
-  <button class="mascot" id="mascot" aria-label="Open Gemma jump menu" aria-expanded="false"><img src="/v6/assets/aegis-core.png" alt="" /></button>
-  <div class="jump-menu" id="jumpMenu" aria-hidden="true">
-    <button data-surface="home">Overview</button>
-    <button data-surface="portfolio">Portfolio</button>
-    <button data-surface="swarm">Defender swarm</button>
-    <button data-surface="containment">Containment plan</button>
-    <button data-surface="timeline">Incident timeline</button>
-    <button data-surface="telemetry">Telemetry intake</button>
-    <button data-surface="evidence">Evidence vault</button>
-    <button data-surface="brief">Exec brief</button>
-    <button data-surface="settings">Settings</button>
-    <button data-command="classic">Classic console</button>
-  </div>
+    <!-- hero -->
+    <div style="position:relative; display:grid; grid-template-columns:1.05fr .95fr; align-items:center; margin-top:18px; min-height:392px;">
+      <!-- left -->
+      <div style="position:relative; z-index:2;">
+        <div style="display:flex; align-items:center; gap:11px; margin-bottom:26px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:#5fd9a0; box-shadow:0 0 12px #5fd9a0; animation:pulseDot 1.4s ease-in-out infinite;"></span>
+          <span style="font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.3em; color:#c2f0d8;">ALL CLEAR · MONITORING</span>
+        </div>
+        <div style="font-family:'Chakra Petch',sans-serif; font-weight:400; font-size:84px; line-height:.9; letter-spacing:.004em; text-transform:uppercase; color:#f4f8ff; text-shadow:0 0 50px rgba(150,185,255,.2);">All systems<br>green</div>
+      </div>
+      <!-- right: core -->
+      <div style="position:relative; height:480px;">
+        <div style="position:absolute; right:0; top:calc(50% - 240px); width:480px; height:480px; animation:logoFloat 6.5s ease-in-out infinite;">
+          <div style="position:absolute; inset:24px; border-radius:50%; border:1px solid rgba(170,200,250,.10); animation:spinSlow 40s linear infinite;"></div>
+          <div style="position:absolute; inset:70px; border-radius:50%; border:1px solid rgba(255,160,205,.07); animation:spinRev 30s linear infinite;"></div>
+          <img src="/v6/assets/aegis-core.png" alt="Aegis defender core" style="position:absolute; inset:18px; width:calc(100% - 36px); height:calc(100% - 36px); object-fit:contain; filter:contrast(1.1) saturate(1.08) brightness(1.05) drop-shadow(0 0 40px rgba(160,195,255,.4));">
+        </div>
+      </div>
+      <!-- vertical scrubber, centered -->
+      <div style="position:absolute; left:52%; top:50%; transform:translate(-50%,-50%); z-index:3; width:320px; pointer-events:none;">
+        <div style="height:2px; background:rgba(255,255,255,.12); position:relative; border-radius:2px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:18%; background:linear-gradient(90deg, rgba(120,200,255,.5), #eaf3ff); box-shadow:0 0 14px rgba(150,200,255,.8); border-radius:2px;"></div>
+          <div style="position:absolute; left:18%; top:50%; width:7px; height:7px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); box-shadow:0 0 12px rgba(180,215,255,.9);"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Chakra Petch',sans-serif; font-size:10.5px; letter-spacing:.18em; color:rgba(200,214,238,.5);"><span>00:11</span><span>LIVE · ALL GREEN</span></div>
+      </div>
+      <!-- incident log (terminal) under the bar -->
+      <div style="{{ logStyle }}" onMouseDown="{{ startLogDrag }}">
+        <div style="display:flex; align-items:center; gap:7px; padding:8px 12px; border-bottom:1px solid rgba(120,200,255,.18); background:rgba(110,200,255,.05);">
+          <span style="width:8px; height:8px; border-radius:50%; background:#5fd9a0;"></span>
+          <span style="width:8px; height:8px; border-radius:50%; background:#ffd27f;"></span>
+          <span style="width:8px; height:8px; border-radius:50%; background:#7fd0ff;"></span>
+          <span style="margin-left:8px; font-family:'Chakra Petch',sans-serif; font-size:9px; letter-spacing:.26em; color:rgba(150,200,255,.65);">STATUS.LOG</span>
+        </div>
+        <div style="padding:14px 16px; font-family:'Chakra Petch',sans-serif; font-size:13px; line-height:1.6; color:rgba(196,232,255,.92);"><span style="color:#7fd0ff;">&gt;&nbsp;</span>No active threats. Four Gemma agents are watching identity, DLP, endpoint, SaaS and storage in real time — nothing needs you right now.<span style="display:inline-block; width:8px; height:14px; background:#7fd0ff; margin-left:4px; vertical-align:-2px; animation:blink 1s steps(1) infinite;"></span></div>
+      </div>
+    </div>
 
-  <div class="composer" id="composer" aria-hidden="true">
-    <div class="composer-box">
-      <div class="chat-log" id="chatLog"></div>
-      <div class="composer-line">
-        <img src="/v6/assets/aegis-core.png" alt="" />
-        <input id="composerInput" placeholder="Ask Gemma anything..." autocomplete="off" />
-        <button class="send" id="sendGemma" aria-label="Send">→</button>
+    <!-- divider -->
+    <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.14) 18%, rgba(255,255,255,.14) 82%, transparent); margin:14px 0 26px;"></div>
+
+    <!-- lower: agents + story -->
+    <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:72px; flex:1;">
+      <!-- agents -->
+      <div>
+        <div style="font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.28em; color:rgba(180,200,230,.5); margin-bottom:8px;">DEFENDER SWARM</div>
+        <!-- row -->
+        <div style="display:flex; align-items:flex-start; gap:18px; padding:17px 0; border-bottom:1px solid rgba(255,255,255,.055);">
+          <span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 10px #7fd0ff; margin-top:8px; flex:none; animation:pulseDot 2.6s ease-in-out infinite;"></span>
+          <div style="flex:1;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;"><span style="font-family:'Chakra Petch',sans-serif; font-size:19px; font-weight:500; color:#eef4ff;">Data Sentinel</span><span style="font-family:'Chakra Petch',sans-serif; font-size:13px; color:rgba(200,214,238,.6);">93%</span></div>
+            <div style="font-family:'Chakra Petch',sans-serif; font-size:13.5px; font-weight:300; color:rgba(228,238,252,.9); margin-top:5px; max-width:480px;">Sensitive stores inventoried; access patterns look normal.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:18px; padding:17px 0; border-bottom:1px solid rgba(255,255,255,.055);">
+          <span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 10px #7fd0ff; margin-top:8px; flex:none; animation:pulseDot 2.6s ease-in-out infinite .4s;"></span>
+          <div style="flex:1;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;"><span style="font-family:'Chakra Petch',sans-serif; font-size:19px; font-weight:500; color:#eef4ff;">Identity Guardian</span><span style="font-family:'Chakra Petch',sans-serif; font-size:13px; color:rgba(200,214,238,.6);">92%</span></div>
+            <div style="font-family:'Chakra Petch',sans-serif; font-size:13.5px; font-weight:300; color:rgba(228,238,252,.9); margin-top:5px; max-width:480px;">Identity, logins and OAuth consents all consistent and trusted.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:18px; padding:17px 0; border-bottom:1px solid rgba(255,255,255,.055);">
+          <span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 10px #7fd0ff; margin-top:8px; flex:none; animation:pulseDot 2.6s ease-in-out infinite .8s;"></span>
+          <div style="flex:1;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;"><span style="font-family:'Chakra Petch',sans-serif; font-size:19px; font-weight:500; color:#eef4ff;">Endpoint Hunter</span><span style="font-family:'Chakra Petch',sans-serif; font-size:13px; color:rgba(200,214,238,.6);">85%</span></div>
+            <div style="font-family:'Chakra Petch',sans-serif; font-size:13.5px; font-weight:300; color:rgba(228,238,252,.9); margin-top:5px; max-width:480px;">Endpoint and EDR telemetry clean — no suspicious activity.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:18px; padding:17px 0;">
+          <span style="width:7px; height:7px; border-radius:50%; background:#d8b6ff; box-shadow:0 0 10px #d8b6ff; margin-top:8px; flex:none; animation:pulseDot 2.6s ease-in-out infinite 1.2s;"></span>
+          <div style="flex:1;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;"><span style="font-family:'Chakra Petch',sans-serif; font-size:19px; font-weight:500; color:#eef4ff;">Response Orchestrator</span><span style="font-family:'Chakra Petch',sans-serif; font-size:13px; color:rgba(216,182,255,.75);">85%</span></div>
+            <div style="font-family:'Chakra Petch',sans-serif; font-size:13.5px; font-weight:300; color:rgba(228,238,252,.9); margin-top:5px; max-width:480px;">Standing by with a one-tap containment plan if anything changes.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 60s story -->
+      <div>
+        <div style="font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.28em; color:rgba(180,200,230,.5); margin-bottom:18px;">60-SECOND STORY</div>
+        <div style="position:relative; padding-left:22px;">
+          <div style="position:absolute; left:4px; top:6px; bottom:6px; width:1px; background:linear-gradient(180deg, rgba(150,205,255,.6), rgba(255,255,255,.06));"></div>
+          <div style="position:relative; margin-bottom:17px;"><div style="position:absolute; left:-22px; top:3px; width:9px; height:9px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 12px #7fd0ff;"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">0s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">Breach signal</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Enterprise data breach in progress</div></div>
+          <div style="position:relative; margin-bottom:17px;"><div style="position:absolute; left:-21px; top:4px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3);"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">5s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">Swarm launch</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Gemma 4 defender swarm activated</div></div>
+          <div style="position:relative; margin-bottom:17px;"><div style="position:absolute; left:-21px; top:4px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3);"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">12s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">OAuth abuse</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Malicious grant links to payroll exports</div></div>
+          <div style="position:relative; margin-bottom:17px;"><div style="position:absolute; left:-21px; top:4px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3);"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">20s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">Agent findings</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Four agents converge on one exfil chain</div></div>
+          <div style="position:relative; margin-bottom:17px;"><div style="position:absolute; left:-21px; top:4px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3);"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">35s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">Speed proof</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Containment plan under live latency budget</div></div>
+          <div style="position:relative;"><div style="position:absolute; left:-21px; top:4px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3);"></div><div style="font-family:'Chakra Petch',sans-serif; font-size:10px; color:rgba(200,214,238,.4);">50s</div><div style="font-family:'Chakra Petch',sans-serif; font-size:15px; font-weight:500; color:#eef4ff; margin-top:1px;">Brief ready</div><div style="font-family:'Chakra Petch',sans-serif; font-size:12.5px; font-weight:300; color:rgba(226,236,252,.86);">Faster containment, evidence preserved</div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
-    const surfaceNames = {
-      home:'Overview', portfolio:'Portfolio', swarm:'Defender swarm', containment:'Containment plan',
-      timeline:'Incident timeline', telemetry:'Telemetry intake', evidence:'Evidence vault', brief:'Exec brief', settings:'Settings'
+  <!-- ===== floating quick-access dial ===== -->
+  <div style="{{ backdropStyle }}" onClick="{{ close }}"></div>
+  <div style="{{ menuStyle }}" onWheel="{{ onDialWheel }}">
+    <!-- heading -->
+    <div style="position:absolute; left:64px; top:58px;">
+      <div style="font-family:'Chakra Petch',sans-serif; font-size:11px; letter-spacing:.3em; color:rgba(180,200,230,.55);">QUICK ACCESS</div>
+      <div style="font-family:'Chakra Petch',sans-serif; font-size:23px; font-weight:500; color:#eef4ff; margin-top:8px;">Jump to any Aegis surface</div>
+    </div>
+
+    <!-- close -->
+    <div onClick="{{ close }}" style="position:absolute; left:1126px; top:300px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(22,26,35,.7); border:1px solid rgba(255,255,255,.1); color:rgba(225,234,250,.82); cursor:pointer; backdrop-filter:blur(8px);" style-hover="background:rgba(44,52,68,.9); color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+    <!-- keyboard hint -->
+    <div style="position:absolute; left:1130px; top:392px; display:flex; flex-direction:column; align-items:center; gap:7px; font-family:'Chakra Petch',sans-serif; color:rgba(180,200,230,.4);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>
+      <div style="width:30px; height:24px; border-radius:6px; border:1px solid rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; font-size:9px;">↵</div>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+    </div>
+
+    <!-- connector to active item -->
+    <svg style="position:absolute; left:506px; top:436px; width:100px; height:60px; overflow:visible; pointer-events:none;"><path d="M0,34 C 36,34 48,12 92,12" stroke="rgba(170,200,250,.5)" stroke-width="1" fill="none"></path><circle cx="92" cy="12" r="2.6" fill="rgba(185,212,255,.95)"></circle></svg>
+
+    <!-- ring icons -->
+    <div onClick="{{ pick }}" data-name="Search" style="position:absolute; left:513px; top:562px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg></div>
+    <div onClick="{{ pick }}" data-name="Settings" style="position:absolute; left:409px; top:597px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"></path><circle cx="15" cy="8" r="2.4"></circle><circle cx="7" cy="16" r="2.4"></circle></svg></div>
+    <div onClick="{{ pick }}" data-name="Telemetry intake" style="position:absolute; left:307px; top:549px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h4l2-6 4 12 2-6h4"></path></svg></div>
+    <div onClick="{{ pick }}" data-name="Overview" style="position:absolute; left:267px; top:447px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></div>
+    <div onClick="{{ pick }}" data-name="Defender swarm" style="position:absolute; left:307px; top:345px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.2-3 7.4-7 8-4-.6-7-3.8-7-8V6z"></path></svg></div>
+    <div onClick="{{ pick }}" data-name="Identity Guardian" style="position:absolute; left:409px; top:297px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path></svg></div>
+    <div onClick="{{ pick }}" data-name="Endpoint Hunter" style="position:absolute; left:513px; top:332px; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(20,24,33,.7); border:1px solid rgba(255,255,255,.1); color:rgba(220,230,248,.82); cursor:pointer; backdrop-filter:blur(8px); transition:transform .16s cubic-bezier(.34,1.56,.64,1), background .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);" style-hover="background:rgba(46,54,70,.95); color:#fff; transform:scale(1.34); border-color:rgba(150,200,255,.6); box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 20px rgba(120,180,255,.4), inset 0 1px 0 rgba(255,255,255,.14);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3"></circle></svg></div>
+
+    <!-- center knob = orbit logo -->
+    <div onClick="{{ close }}" style="position:absolute; left:370px; top:400px; width:140px; height:140px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+      <div style="position:absolute; inset:-16px; border-radius:50%; background:radial-gradient(circle, rgba(150,190,255,.3), transparent 66%); filter:blur(9px);"></div>
+      <div style="position:absolute; inset:0; border-radius:50%; border:1px solid rgba(170,200,250,.2); animation:spinSlow 30s linear infinite;"></div>
+      <div style="position:absolute; inset:18px; border-radius:50%; border:1px solid rgba(255,160,205,.12); animation:spinRev 22s linear infinite;"></div>
+      <img src="/v6/assets/aegis-core.png" alt="" style="position:relative; width:100%; height:100%; object-fit:contain; filter:contrast(1.1) saturate(1.08) brightness(1.04) drop-shadow(0 0 24px rgba(160,200,255,.6));">
+    </div>
+
+    <!-- flyout list (wheel-scrollable) -->
+    <div style="position:absolute; left:600px; top:296px; width:308px;">{{ flyoutEl }}</div>
+  </div>
+
+  <!-- surface pages (jump-to targets) -->
+  <div style="{{ surfaceStyle }}">{{ surfaceEl }}</div>
+
+  <!-- EXEC BRIEF surface (bespoke, matches reference) -->
+  <sc-if value="{{ isBrief }}" hint-placeholder-val="{{ true }}">
+  <div style="position:absolute; inset:0; z-index:9; overflow-y:auto; padding:52px 64px 72px; background:radial-gradient(120% 90% at 82% -5%, #141c2a, #000 58%); font-family:'Chakra Petch',sans-serif;">
+
+    <div onClick="{{ briefBack }}" style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; color:rgba(200,214,238,.7); font-size:11px; letter-spacing:.2em; margin-bottom:24px;">← OVERVIEW</div>
+
+    <!-- top: title + brief-generated card + orbit core -->
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:30px;">
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:12px; letter-spacing:.3em; color:#7fb6ff; margin-bottom:14px;">FOR LEADERSHIP</div>
+        <div style="font-size:84px; line-height:.86; text-transform:uppercase; color:#f4f8ff; letter-spacing:.01em;">EXEC BRIEF</div>
+        <div style="font-size:17px; font-weight:300; color:rgba(231,240,253,.9); margin-top:18px;">What happened, what we did, what it saved.</div>
+      </div>
+      <div style="position:relative; width:520px; height:300px; flex:none;">
+        <div style="position:absolute; left:0; top:14px; z-index:2; padding:16px 20px; border-radius:14px; background:rgba(14,18,26,.62); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); box-shadow:0 24px 60px -30px rgba(0,0,0,.7);">
+          <div style="display:flex; align-items:center; gap:8px; font-size:10px; letter-spacing:.26em; color:#7fb6ff; margin-bottom:9px;"><span style="width:6px; height:6px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 8px #7fd0ff;"></span>BRIEF GENERATED</div>
+          <div style="display:flex; align-items:baseline; gap:7px;"><span style="font-size:30px; color:#eef4ff; letter-spacing:.02em;">{{ briefTime }}</span><span style="font-size:11px; letter-spacing:.2em; color:rgba(170,190,220,.6);">UTC</span></div>
+          <div style="font-size:11px; letter-spacing:.16em; color:rgba(170,190,220,.6); margin-top:6px;">{{ briefDate }}</div>
+        </div>
+        <div style="position:absolute; right:-30px; top:-6px; width:330px; height:300px;">
+          <div style="position:absolute; inset:40px; border-radius:50%; border:1px solid rgba(170,200,250,.12); animation:spinSlow 40s linear infinite;"></div>
+          <div style="position:absolute; inset:78px; border-radius:50%; border:1px solid rgba(255,160,205,.08); animation:spinRev 30s linear infinite;"></div>
+          <img src="/v6/assets/aegis-core.png" alt="" style="position:absolute; inset:20px; width:calc(100% - 40px); height:calc(100% - 40px); object-fit:contain; filter:contrast(1.1) saturate(1.06) brightness(1.02) drop-shadow(0 0 26px rgba(150,190,255,.4));">
+        </div>
+        <svg width="32" height="32" viewBox="0 0 24 24" style="position:absolute; left:16px; top:152px;"><path d="M12 0 L13.6 10.4 L24 12 L13.6 13.6 L12 24 L10.4 13.6 L0 12 L10.4 10.4 Z" fill="#eaf2ff"></path></svg>
+      </div>
+    </div>
+
+    <!-- status rows -->
+    <div style="max-width:780px; margin-top:28px;">
+      <div style="display:flex; align-items:flex-start; gap:18px; padding:18px 0; border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.02); display:flex; align-items:center; justify-content:center; color:rgba(220,232,250,.82); flex:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2.4"></circle><path d="M12 1v3M12 20v3M1 12h3M20 12h3"></path></svg><svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute; inset:-1px;"><path d="M33 8 A 20 20 0 0 1 42 21" fill="none" stroke="#7fd0ff" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <div style="flex:1; padding-top:2px;"><div style="font-size:19px; letter-spacing:.02em; color:#eef4ff;">THREAT</div><div style="font-size:14px; font-weight:300; color:rgba(228,238,252,.86); margin-top:4px;">Finance-admin account abused for a payroll-data exfil attempt.</div></div>
+        <div style="font-size:15px; color:#74e0a4; align-self:center; flex:none;">contained</div>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:18px; padding:18px 0; border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.02); display:flex; align-items:center; justify-content:center; color:rgba(220,232,250,.82); flex:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.2-3 7.4-7 8-4-.6-7-3.8-7-8V6z"></path></svg><svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute; inset:-1px;"><path d="M33 8 A 20 20 0 0 1 42 21" fill="none" stroke="#7fd0ff" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <div style="flex:1; padding-top:2px;"><div style="font-size:19px; letter-spacing:.02em; color:#eef4ff;">RESPONSE</div><div style="font-size:14px; font-weight:300; color:rgba(228,238,252,.86); margin-top:4px;">Session disabled, OAuth revoked, export key frozen in 1.9s.</div></div>
+        <div style="font-size:15px; color:#74e0a4; align-self:center; flex:none;">automated</div>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:18px; padding:18px 0; border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.02); display:flex; align-items:center; justify-content:center; color:rgba(220,232,250,.82); flex:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l9 16H3z"></path><path d="M12 9v5M12 16.5h.01"></path></svg><svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute; inset:-1px;"><path d="M33 8 A 20 20 0 0 1 42 21" fill="none" stroke="#7fd0ff" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <div style="flex:1; padding-top:2px;"><div style="font-size:19px; letter-spacing:.02em; color:#eef4ff;">IMPACT</div><div style="font-size:14px; font-weight:300; color:rgba(228,238,252,.86); margin-top:4px;">Exfiltration blocked before data left the perimeter.</div></div>
+        <div style="font-size:15px; color:#74e0a4; align-self:center; flex:none;">prevented</div>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:18px; padding:18px 0;">
+        <div style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.02); display:flex; align-items:center; justify-content:center; color:rgba(220,232,250,.82); flex:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="5" rx="7" ry="3"></ellipse><path d="M5 5v14c0 1.7 3.1 3 7 3s7-1.3 7-3V5"></path><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"></path></svg><svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute; inset:-1px;"><path d="M33 8 A 20 20 0 0 1 42 21" fill="none" stroke="#7fd0ff" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <div style="flex:1; padding-top:2px;"><div style="font-size:19px; letter-spacing:.02em; color:#eef4ff;">EVIDENCE</div><div style="font-size:14px; font-weight:300; color:rgba(228,238,252,.86); margin-top:4px;">Full artifact chain sealed for IR and audit.</div></div>
+        <div style="font-size:15px; color:#74e0a4; align-self:center; flex:none;">preserved</div>
+      </div>
+    </div>
+
+    <!-- bottom dashboard -->
+    <div style="display:flex; gap:24px; margin-top:34px; align-items:flex-start;">
+      <div style="flex:1.8; min-width:0;">
+        <div style="display:flex; gap:20px; align-items:stretch;">
+          <div style="flex:1; min-width:0; padding:18px 20px; border-radius:16px; background:rgba(14,18,26,.5); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(10px);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;"><span style="font-size:11px; letter-spacing:.28em; color:rgba(165,185,215,.55);">STATUS.LOG</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(165,185,215,.5)" stroke-width="1.6"><path d="M4 14v6h6M20 10V4h-6M20 4l-7 7M4 20l7-7"></path></svg></div>
+            <div style="font-size:14px; font-weight:300; line-height:1.6; color:rgba(220,232,250,.82);"><span style="color:#74e0a4;">&gt;</span> No active threats. Four Gemma agents are watching identity, DLP, endpoint, SaaS and storage in real time — nothing needs you right now.</div>
+          </div>
+          <div style="flex:1.3; min-width:0; padding:18px 20px; border-radius:16px; background:rgba(14,18,26,.5); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(10px);">
+            <div style="font-size:11px; letter-spacing:.28em; color:rgba(165,185,215,.55); margin-bottom:14px;">KEY METRICS</div>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr);">
+              <div style="padding:0 14px 0 0;"><div style="font-size:10px; letter-spacing:.18em; color:rgba(160,182,212,.6); margin-bottom:8px;">MTTD</div><div style="font-size:25px; color:#eef4ff;">00:12</div><div style="font-size:9px; letter-spacing:.18em; color:rgba(160,182,212,.55); margin-top:5px;">MINUTES</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="30" style="display:block; margin-top:10px;"><polyline points="0,30 10,22 20,28 30,16 40,24 50,12 60,20 70,9 80,18 90,11 100,20 110,7 120,15 130,10 140,17 150,8" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+              <div style="padding:0 14px; border-left:1px solid rgba(255,255,255,.07);"><div style="font-size:10px; letter-spacing:.18em; color:rgba(160,182,212,.6); margin-bottom:8px;">MTTR</div><div style="font-size:25px; color:#eef4ff;">01:51</div><div style="font-size:9px; letter-spacing:.18em; color:rgba(160,182,212,.55); margin-top:5px;">MINUTES</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="30" style="display:block; margin-top:10px;"><polyline points="0,24 10,28 20,18 30,26 40,14 50,22 60,10 70,20 80,12 90,22 100,9 110,18 120,11 130,20 140,8 150,16" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+              <div style="padding:0 14px; border-left:1px solid rgba(255,255,255,.07);"><div style="font-size:10px; letter-spacing:.18em; color:rgba(160,182,212,.6); margin-bottom:8px;">DATA AT RISK</div><div style="display:flex; align-items:baseline; gap:4px;"><span style="font-size:25px; color:#eef4ff;">2.7</span><span style="font-size:12px; color:rgba(190,205,230,.7);">GB</span></div><div style="font-size:9px; letter-spacing:.18em; color:rgba(160,182,212,.55); margin-top:5px;">PREVENTED</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="30" style="display:block; margin-top:10px;"><polyline points="0,28 10,20 20,26 30,12 40,22 50,16 60,8 70,18 80,10 90,24 100,14 110,22 120,9 130,17 140,12 150,20" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+              <div style="padding:0 0 0 14px; border-left:1px solid rgba(255,255,255,.07);"><div style="font-size:10px; letter-spacing:.18em; color:rgba(160,182,212,.6); margin-bottom:8px;">ACTION SPEED</div><div style="display:flex; align-items:baseline; gap:4px;"><span style="font-size:25px; color:#eef4ff;">1.9</span><span style="font-size:12px; color:rgba(190,205,230,.7);">s</span></div><div style="font-size:9px; letter-spacing:.18em; color:rgba(160,182,212,.55); margin-top:5px;">CONTAINMENT</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="30" style="display:block; margin-top:10px;"><polyline points="0,22 10,26 20,16 30,24 40,12 50,20 60,14 70,22 80,10 90,18 100,12 110,24 120,14 130,20 140,11 150,18" fill="none" stroke="#c9a6ff" stroke-width="1.5"></polyline></svg></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:22px; padding:20px 22px; border-radius:16px; background:rgba(14,18,26,.5); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(10px);">
+          <div style="font-size:11px; letter-spacing:.28em; color:rgba(165,185,215,.55); margin-bottom:16px;">DEFENDER SWARM</div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+            <div style="padding:14px 16px; border-radius:13px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);"><div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;"><div style="display:flex; gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(220,232,250,.8)" stroke-width="1.5" style="flex:none;"><path d="M5 8l-2-3 4 1 5-3 5 3 4-1-2 3v6c0 3-3.5 5-7 6-3.5-1-7-3-7-6z"></path><circle cx="9.5" cy="11" r="1"></circle><circle cx="14.5" cy="11" r="1"></circle></svg><div><div style="font-size:11px; letter-spacing:.1em; color:#eef4ff;">DATA SENTINEL</div><div style="font-size:11px; font-weight:300; color:rgba(190,205,230,.6); margin-top:2px;">Sensitive data monitor</div></div></div><span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 8px #7fd0ff; flex:none; margin-top:3px;"></span></div><div style="font-size:28px; color:#eef4ff; margin-top:14px;">93%</div><div style="font-size:9px; letter-spacing:.2em; color:rgba(160,182,212,.55); margin-top:2px;">CONFIDENCE</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="32" style="display:block; margin-top:10px;"><polyline points="0,28 8,22 16,26 24,18 32,24 40,14 48,22 56,12 64,20 72,10 80,18 88,13 96,22 104,9 112,17 120,12 128,20 136,11 144,16 150,13" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+            <div style="padding:14px 16px; border-radius:13px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);"><div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;"><div style="display:flex; gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(220,232,250,.8)" stroke-width="1.5" style="flex:none;"><path d="M12 3l7 3v5c0 4.2-3 7.4-7 8-4-.6-7-3.8-7-8V6z"></path><path d="M9.5 12l1.8 1.8 3.5-3.6"></path></svg><div><div style="font-size:11px; letter-spacing:.1em; color:#eef4ff;">IDENTITY GUARDIAN</div><div style="font-size:11px; font-weight:300; color:rgba(190,205,230,.6); margin-top:2px;">Identity protection</div></div></div><span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 8px #7fd0ff; flex:none; margin-top:3px;"></span></div><div style="font-size:28px; color:#eef4ff; margin-top:14px;">92%</div><div style="font-size:9px; letter-spacing:.2em; color:rgba(160,182,212,.55); margin-top:2px;">CONFIDENCE</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="32" style="display:block; margin-top:10px;"><polyline points="0,22 8,26 16,18 24,24 32,14 40,22 48,11 56,20 64,12 72,22 80,9 88,18 96,12 104,21 112,10 120,17 128,13 136,20 144,11 150,16" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+            <div style="padding:14px 16px; border-radius:13px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);"><div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;"><div style="display:flex; gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(220,232,250,.8)" stroke-width="1.5" style="flex:none;"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3"></circle></svg><div><div style="font-size:11px; letter-spacing:.1em; color:#eef4ff;">ENDPOINT HUNTER</div><div style="font-size:11px; font-weight:300; color:rgba(190,205,230,.6); margin-top:2px;">Endpoint detection</div></div></div><span style="width:7px; height:7px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 8px #7fd0ff; flex:none; margin-top:3px;"></span></div><div style="font-size:28px; color:#eef4ff; margin-top:14px;">85%</div><div style="font-size:9px; letter-spacing:.2em; color:rgba(160,182,212,.55); margin-top:2px;">CONFIDENCE</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="32" style="display:block; margin-top:10px;"><polyline points="0,26 8,20 16,24 24,14 32,22 40,12 48,20 56,10 64,18 72,13 80,22 88,9 96,17 104,12 112,21 120,10 128,18 136,13 144,20 150,12" fill="none" stroke="#74e0a4" stroke-width="1.5"></polyline></svg></div>
+            <div style="padding:14px 16px; border-radius:13px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07);"><div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;"><div style="display:flex; gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(220,232,250,.8)" stroke-width="1.5" style="flex:none;"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path></svg><div><div style="font-size:11px; letter-spacing:.1em; color:#eef4ff;">RESPONSE ORCHESTRATOR</div><div style="font-size:11px; font-weight:300; color:rgba(190,205,230,.6); margin-top:2px;">Incident orchestration</div></div></div><span style="width:7px; height:7px; border-radius:50%; background:#c9a6ff; box-shadow:0 0 8px #c9a6ff; flex:none; margin-top:3px;"></span></div><div style="font-size:28px; color:#eef4ff; margin-top:14px;">85%</div><div style="font-size:9px; letter-spacing:.2em; color:rgba(160,182,212,.55); margin-top:2px;">CONFIDENCE</div><svg viewBox="0 0 150 36" preserveAspectRatio="none" width="100%" height="32" style="display:block; margin-top:10px;"><polyline points="0,20 8,26 16,16 24,24 32,12 40,22 48,13 56,21 64,10 72,18 80,12 88,24 96,13 104,20 112,11 120,18 128,13 136,22 144,12 150,17" fill="none" stroke="#c9a6ff" stroke-width="1.5"></polyline></svg></div>
+          </div>
+        </div>
+      </div>
+      <div style="width:460px; flex:none; padding:22px 24px; border-radius:16px; background:rgba(14,18,26,.5); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(10px);">
+        <div style="font-size:11px; letter-spacing:.28em; color:rgba(165,185,215,.55); margin-bottom:20px;">60-SECOND STORY</div>
+        <div style="position:relative;">
+          <div style="position:absolute; left:6px; top:6px; bottom:10px; width:0; border-left:1px dashed rgba(255,255,255,.16);"></div>
+          <div style="display:flex; align-items:flex-start; gap:16px; padding-bottom:18px;"><span style="width:13px; height:13px; border-radius:50%; background:#7fd0ff; box-shadow:0 0 10px #7fd0ff; flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">0s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">Breach signal</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">Enterprise data breach in progress</div></div></div>
+          <div style="display:flex; align-items:flex-start; gap:16px; padding-bottom:18px;"><span style="width:13px; height:13px; border-radius:50%; background:#0b0f16; border:1px solid rgba(255,255,255,.25); flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">5s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">Swarm launch</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">Gemma 4 defender swarm activated</div></div></div>
+          <div style="display:flex; align-items:flex-start; gap:16px; padding-bottom:18px;"><span style="width:13px; height:13px; border-radius:50%; background:#0b0f16; border:1px solid rgba(255,255,255,.25); flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">12s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">OAuth abuse</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">Malicious grant links to payroll exports</div></div></div>
+          <div style="display:flex; align-items:flex-start; gap:16px; padding-bottom:18px;"><span style="width:13px; height:13px; border-radius:50%; background:#0b0f16; border:1px solid rgba(255,255,255,.25); flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">20s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">Agent findings</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">Four agents converge on one exfil chain</div></div></div>
+          <div style="display:flex; align-items:flex-start; gap:16px; padding-bottom:18px;"><span style="width:13px; height:13px; border-radius:50%; background:#0b0f16; border:1px solid rgba(255,255,255,.25); flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">35s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">Speed proof</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">Containment plan under live latency budget</div></div></div>
+          <div style="display:flex; align-items:flex-start; gap:16px;"><span style="width:13px; height:13px; border-radius:50%; background:#74e0a4; box-shadow:0 0 10px #74e0a4; flex:none; margin-top:3px;"></span><span style="width:30px; flex:none; font-size:12px; color:rgba(165,185,215,.65); margin-top:3px;">59s</span><div style="flex:1;"><div style="font-size:15px; color:#eef4ff;">All systems green</div><div style="font-size:13px; font-weight:300; color:rgba(200,214,238,.6); margin-top:2px;">No active threats. Monitoring continues.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </sc-if>
+
+  <!-- big floating Gemma logo (the AI avatar) + its mood emote — beside the giant hero core -->
+  <div style="{{ avatarStyle }}" onDoubleClick="{{ grabAvatar }}">
+    <!-- mood emote, popped above the avatar -->
+    <div style="position:absolute; left:50%; bottom:130px; transform:translateX(-50%); z-index:1; pointer-events:none; display:flex; justify-content:center;">{{ emoteEl }}</div>
+    <!-- avatar / dial trigger -->
+    <div onClick="{{ avatarClick }}" title="Double-click to move · click to open" style="position:absolute; inset:0; cursor:inherit; display:flex; align-items:center; justify-content:center;" style-hover="filter:brightness(1.18);">
+      <img src="/v6/assets/aegis-core.png" alt="Open menu" style="position:relative; width:100%; height:100%; object-fit:contain; filter:contrast(1.08) saturate(1.06) drop-shadow(0 0 16px rgba(150,190,255,.55));">
+    </div>
+  </div>
+
+  <!-- surface toast -->
+  <div style="{{ toastStyle }}"><span style="font-family:'Chakra Petch',sans-serif; font-size:10px; letter-spacing:.22em; color:#7fd0ff;">OPENING</span>{{ toast }}</div>
+
+  <!-- type anywhere -> message Gemma 4 -->
+  <div style="{{ composerWrapStyle }}" onClick="{{ closeComposer }}">
+    <div onClick="{{ stop }}" style="{{ composerStyle }}">
+      {{ chatEl }}
+      <div style="display:flex; align-items:center; gap:14px;">
+        <img src="/v6/assets/aegis-core.png" alt="" style="width:36px; height:36px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(150,190,255,.55)); flex:none;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:3px;">
+          <div style="font-family:'Chakra Petch',sans-serif; font-size:9.5px; letter-spacing:.24em; color:rgba(150,200,255,.6);">MESSAGE GEMMA 4</div>
+          <input ref="{{ inputRef }}" value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onComposerKey }}" placeholder="Ask Gemma anything…" style="background:transparent; border:none; outline:none; color:#eef4ff; font-family:'Chakra Petch',sans-serif; font-size:18px; width:100%; padding:0;">
+        </div>
+        <div onClick="{{ sendMsg }}" title="Send" style="flex:none; width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:rgba(110,200,255,.14); border:1px solid rgba(110,200,255,.4); color:#bfe3ff; cursor:pointer;" style-hover="background:rgba(110,200,255,.26);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: false, active: 'Containment plan', mood: 'content', agentCount: 4, composerOpen: false, draft: '', lastUser: '', reply: '', thinking: false, toast: '', surface: 'home', reports: [], avatarPos: { left: 852, top: 332 }, logOpen: true, logPos: null, moving: false, dialIdx: 2 };
+
+  componentDidMount() {
+    try { const sr = JSON.parse(localStorage.getItem('ds_reports')||'[]'); if (Array.isArray(sr) && sr.length) this.setState({ reports: sr }); } catch(e){}
+    try {
+      let pendingSurface = sessionStorage.getItem('gemma_aegis_surface');
+      sessionStorage.removeItem('gemma_aegis_surface');
+      const names = { home:'Overview', swarm:'Defender swarm', containment:'Containment plan', timeline:'Incident timeline', telemetry:'Telemetry intake', evidence:'Evidence vault', brief:'Exec brief', settings:'Settings' };
+      if (!pendingSurface && location.hash) pendingSurface = location.hash.replace(/^#/, '').toLowerCase();
+      if (pendingSurface && names[pendingSurface]) {
+        this.setState({ surface: pendingSurface, active: names[pendingSurface], toast: names[pendingSurface], open: false });
+        if (location.hash) history.replaceState(null, '', location.pathname);
+      }
+    } catch(e){}
+    // moods Gemma 4 can emit; mapped to sketch emotes in assets/emotes/
+    this.moods = ['content','happy','excited','confused','alarmed','angry','sad','love'];
+    this._auto = true; this._i = 0;
+    // demo: gently cycle moods until something drives it externally
+    this._timer = setInterval(() => {
+      if (!this._auto) return;
+      this._i = (this._i + 1) % this.moods.length;
+      this.setState({ mood: this.moods[this._i] });
+    }, 3500);
+    // hook for Gemma 4: window.setMood('happy') etc. (pauses the demo cycle)
+    window.setMood = (m) => { this._auto = false; if (this.moods.indexOf(m) >= 0) this.setState({ mood: m }); };
+    window.DataShieldMood = {
+      list: () => this.moods.slice(),
+      set: (m) => window.setMood(m),
+      resumeDemo: () => { this._auto = true; }
     };
-    const fallbackPages = {
-      swarm: { title:'Defender swarm', sub:'Four Gemma agents on watch.', rows:[['Data Sentinel','Sensitive stores inventoried and ranked by business risk.'],['Identity Guardian','OAuth grants, impossible travel, and account abuse correlated.'],['Endpoint Hunter','PowerShell, RDP, and process telemetry linked to the chain.'],['Response Orchestrator','Containment, evidence, and leadership action generated.']] },
-      containment: { title:'Containment plan', sub:'Stop the exfiltration path without losing evidence.', rows:[['Revoke OAuth grant','Invalidate malicious grants and refresh tokens.'],['Disable session','Kill the active finance-admin session immediately.'],['Freeze export key','Lock the export key and snapshot the bucket.'],['Isolate workstation','Quarantine the host and preserve command history.']] },
-      timeline: { title:'Incident timeline', sub:'A crisp sixty-second incident story.', rows:[['0s','Enterprise data breach signal enters the loop.'],['12s','OAuth abuse links to payroll exports.'],['20s','Four agents converge on one exfil chain.'],['50s','Brief is ready for leadership action.']] },
-      telemetry: { title:'Telemetry intake', sub:'Five live streams feed the defender loop.', rows:[['Identity','Logins, OAuth consents, impossible travel.'],['DLP','Sensitive-data movement and staging.'],['Endpoint','EDR, process, and workstation behavior.'],['Storage','Bucket access, export keys, snapshots.']] },
-      evidence: { title:'Evidence vault', sub:'Immutable artifacts preserved during containment.', rows:[['S3 bucket snapshot','Export bucket and key state captured.'],['OAuth grant log','Malicious consent and token chain sealed.'],['PowerShell transcript','Download cradle and command history captured.'],['Payroll manifest','Staged payroll and bank-account data list.']] },
-      brief: { title:'Exec brief', sub:'What happened, what was contained, and the business impact.', rows:[['Threat','Finance-admin account abused for payroll-data exfiltration.'],['Response','Session disabled, OAuth revoked, export key frozen.'],['Impact','Exfiltration blocked before data left the perimeter.'],['Evidence','Full artifact chain sealed for IR and audit.']] },
-      settings: { title:'Settings', sub:'Server-side model and privacy posture.', rows:[['Model','gemma-4-31b on Cerebras.'],['API key','Server-side only, never shipped in browser code.'],['File access','Opt-in controls remain part of the product settings.'],['Baseline','Optional health check, not product evidence.']] }
-    };
-    let livePages = {};
-    let chatOpen = false;
-
-    function hideFirstVisitLoader() {
-      const loader = $('loader');
-      let seen = false;
-      try { seen = sessionStorage.getItem('aegis_loader_seen') === '1'; } catch(e) {}
-      if (seen) {
-        loader.classList.add('hide');
-        return;
-      }
-      setTimeout(() => {
-        loader.classList.add('hide');
-        try { sessionStorage.setItem('aegis_loader_seen', '1'); } catch(e) {}
-      }, 1150);
-    }
-
-    function initPendingSurface() {
-      try {
-        let pendingSurface = sessionStorage.getItem('gemma_aegis_surface');
-        sessionStorage.removeItem('gemma_aegis_surface');
-        if (!pendingSurface && location.hash) pendingSurface = location.hash.replace(/^#/, '').toLowerCase();
-        if (pendingSurface && surfaceNames[pendingSurface]) {
-          if (location.hash) history.replaceState(null, '', location.pathname);
-          openSurface(pendingSurface);
-        }
-      } catch(e) {}
-    }
-
-    function setJumpMenu(open) {
-      $('jumpMenu').classList.toggle('open', open);
-      $('jumpMenu').setAttribute('aria-hidden', open ? 'false' : 'true');
-      $('mascot').setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-
-    function navSurface(text) {
-      const t = (text || '').toLowerCase();
-      if (!/\b(nav|navigate|go to|goto|open|show|take me|jump|switch|pull up|bring up)\b/.test(t) && !t.startsWith('/')) return null;
-      const pairs = [
-        ['classic', /classic/], ['portfolio', /portfolio|works|projects/], ['swarm', /defender swarm|swarm|agent|sentinel|guardian|hunter/],
-        ['containment', /containment|contain|response plan|orchestrat/], ['timeline', /timeline|incident|60.?second|story/],
-        ['telemetry', /telemetry|intake|stream|signal/], ['evidence', /evidence|vault|artifact|forensic/],
-        ['brief', /exec|executive|brief|leadership|report/], ['settings', /setting|config|preference/], ['home', /home|overview|hero|main|dashboard/]
-      ];
-      for (const [key, re] of pairs) if (re.test(t)) return key;
-      return null;
-    }
-
-    function openSurface(surface) {
-      // Compatibility marker for tests and older command docs: surface: 'home'
-      setJumpMenu(false);
-      if (surface === 'classic') { window.location.href = '/classic'; return; }
-      if (surface === 'home') {
-        $('surfaceView').classList.remove('active');
-        $('homeView').style.display = '';
-        document.getElementById('hero').scrollIntoView({ block:'start' });
-        return;
-      }
-      if (surface === 'portfolio') {
-        $('surfaceView').classList.remove('active');
-        $('homeView').style.display = '';
-        document.getElementById('portfolio').scrollIntoView({ block:'start' });
-        return;
-      }
-      const page = livePages[surface] || fallbackPages[surface];
-      if (!page) return;
-      $('homeView').style.display = 'none';
-      $('surfaceView').classList.add('active');
-      $('surfaceTitle').textContent = page.title || surfaceNames[surface] || surface;
-      $('surfaceLead').textContent = page.sub || 'Gemma Aegis operational surface.';
-      const rows = (page.rows || []).map((row) => `<div class="signal"><strong>${row[0] || ''}</strong><span>${row[2] || row[1] || ''}</span></div>`).join('');
-      $('surfaceRows').innerHTML = rows;
-      window.scrollTo({ top:0, behavior:'smooth' });
-    }
-
-    function setComposer(open, seed = '') {
-      chatOpen = open;
-      $('composer').classList.toggle('open', open);
-      $('composer').setAttribute('aria-hidden', open ? 'false' : 'true');
-      if (open) {
-        $('composerInput').value = seed;
-        setTimeout(() => {
-          $('composerInput').focus();
-          $('composerInput').setSelectionRange(seed.length, seed.length);
-        }, 0);
-      }
-    }
-
-    async function askGemma(text, isReport = false) {
-      $('chatLog').textContent = `You: ${text}\n\nGemma is thinking...`;
-      try {
-        const r = await fetch('/api/datashield-chat', {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
-          body: JSON.stringify({ prompt:text, report:isReport, max_completion_tokens:isReport ? 640 : 384 })
-        });
-        const j = await r.json().catch(() => ({}));
-        if (!r.ok || j.error) throw new Error(j.error || 'HTTP ' + r.status);
-        let msg = j.reply || j.output || '(empty reply)';
-        const nm = msg.match(/\[\[NAV:(\w+)\]\]/i);
-        if (nm) {
-          msg = msg.replace(nm[0], '').trim();
-          openSurface(nm[1].toLowerCase());
-        }
-        $('chatLog').textContent = `You: ${text}\n\nGemma: ${msg || 'Opening surface.'}`;
-      } catch (err) {
-        $('chatLog').textContent = `You: ${text}\n\nGemma: ${err && err.message ? err.message : err}`;
-      }
-    }
-
-    function sendMsg() {
-      const tx = $('composerInput').value.trim();
-      if (!tx) return;
-      const low = tx.toLowerCase();
-      if (/^\/classic\/?$/.test(low)) { window.location.href = '/classic'; return; }
-      if (/^\/(?:home|overview|main|dashboard)\/?$/.test(low)) { setComposer(false); openSurface('home'); return; }
-      const nav = navSurface(tx);
-      if (nav) { setComposer(false); openSurface(nav); return; }
-      if (/(?:generate|create|make|produce|draft|build)[\s\S]*report|report\s*\(?demo/i.test(low)) {
-        openSurface('evidence');
-        askGemma('Generate a concise security incident report with short labelled sections - Summary, Timeline, Evidence, Actions taken, Recommendation - for the contained finance-admin OAuth abuse and payroll-data exfiltration attempt. Plain text, no markdown symbols.', true);
-        return;
-      }
-      $('composerInput').value = '';
-      askGemma(tx);
-    }
-
-    async function loadState() {
-      try {
-        const r = await fetch('/api/datashield-state', { headers:{ 'Accept':'application/json' } });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const j = await r.json();
-        livePages = j.pages || {};
-      } catch(e) {}
-    }
-
-    async function runDemo() {
-      openSurface('swarm');
-      setComposer(true, '');
-      let scenario = 'Run the safe red-team demo through Gemma Aegis and summarize data at risk, attack chain, containment, evidence, and executive brief.';
-      try {
-        const scenarioRes = await fetch('/api/blue-team-scenario');
-        const scenarioJson = await scenarioRes.json();
-        if (scenarioJson.scenario) scenario = scenarioJson.scenario;
-        await fetch('/api/datashield-brief');
-      } catch(e) {}
-      await askGemma(scenario, true);
-    }
-
-    document.querySelectorAll('[data-surface]').forEach((el) => el.addEventListener('click', () => openSurface(el.getAttribute('data-surface'))));
-    document.querySelectorAll('[data-jump]').forEach((el) => el.addEventListener('click', () => {
-      const target = el.getAttribute('data-jump');
-      if (target === 'menu') setJumpMenu(!$('jumpMenu').classList.contains('open'));
-      if (target === 'contact') document.getElementById('contact').scrollIntoView({ block:'start' });
-    }));
-    document.querySelectorAll('[data-open-composer]').forEach((el) => el.addEventListener('click', () => setComposer(true, '')));
-    $('mascot').addEventListener('click', (event) => { event.stopPropagation(); setJumpMenu(!$('jumpMenu').classList.contains('open')); });
-    $('jumpMenu').addEventListener('click', (event) => {
-      event.stopPropagation();
-      const cmd = event.target.closest('[data-command]');
-      if (cmd && cmd.getAttribute('data-command') === 'classic') window.location.href = '/classic';
-    });
-    $('composer').addEventListener('click', () => setComposer(false));
-    document.querySelector('.composer-box').addEventListener('click', (event) => event.stopPropagation());
-    $('sendGemma').addEventListener('click', sendMsg);
-    $('composerInput').addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') { event.preventDefault(); setComposer(false); }
-      if (event.key === 'Enter') { event.preventDefault(); sendMsg(); }
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
-      const t = event.target;
+    // hook: spawn one floating Gemma per active defender agent
+    window.setAgentCount = (k) => this.setState({ agentCount: Math.max(0, k | 0) });
+    window.DataShieldAgents = { set: (k) => window.setAgentCount(k), get: () => this.state.agentCount };
+    this._loadLiveState();
+    // start typing anywhere -> open a message box to Gemma 4
+    this._inputRef = React.createRef();
+    this._onKey = (e) => {
+      if (this.state.composerOpen) return;
+      if (this.state.open && e.key === 'Enter') { const FE=[['Telemetry intake','telemetry'],['Defender swarm','swarm'],['Containment plan','containment'],['Incident timeline','timeline'],['Evidence vault','evidence'],['Exec brief','brief']]; const it=FE[Math.max(0,Math.min(5,this.state.dialIdx||0))]; this.setState({open:false,surface:it[1],active:it[0]}); return; }
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-      if (event.key === 'Escape') { setJumpMenu(false); setComposer(false); return; }
-      if (event.key && event.key.length === 1) { event.preventDefault(); setComposer(true, event.key); }
-    });
-    document.addEventListener('click', (event) => {
-      if (event.target.closest && event.target.closest('#mascot, #jumpMenu')) return;
-      setJumpMenu(false);
-    });
-    $('backHome').addEventListener('click', () => openSurface('portfolio'));
-    $('runDemo').addEventListener('click', runDemo);
+      if (e.key && e.key.length === 1) {
+        e.preventDefault();
+        this.setState({ composerOpen: true, draft: e.key }, () => {
+          const el = this._inputRef.current;
+          if (el) { el.focus(); const n = el.value.length; el.setSelectionRange(n, n); }
+        });
+      }
+    };
+    window.addEventListener('keydown', this._onKey);
+    // double-click to pick up Gemma and move it; click to drop
+    this._frameEl = document.querySelector('[data-screen-label="Boxless main"]');
+    this._onMove = (e) => { if (!this.state.moving || !this._frameEl) return; const r = this._frameEl.getBoundingClientRect(); const sc = r.width / 1440 || 1; this.setState({ avatarPos: { left: (e.clientX - r.left) / sc - 59, top: (e.clientY - r.top) / sc - 59 } }); };
+    this._onDrop = () => { if (this.state.moving) this.setState({ moving: false }); };
+    window.addEventListener('mousemove', this._onMove);
+    window.addEventListener('click', this._onDrop);
+    // double-click anywhere -> Gemma glides to that spot
+    this._onDbl = (e) => { if (e.target.closest && e.target.closest('[title^="Double-click"]')) return; if (!this._frameEl) return; const r = this._frameEl.getBoundingClientRect(); const sc = r.width / 1440 || 1; this.setState({ moving: false, avatarPos: { left: (e.clientX - r.left) / sc - 59, top: (e.clientY - r.top) / sc - 59 } }); };
+    window.addEventListener('dblclick', this._onDbl);
+    this._onLogMove = (e) => { if (!this._logDrag || !this._frameEl) return; const r = this._frameEl.getBoundingClientRect(); const sc = r.width/1440 || 1; this.setState({ logPos: { left:(e.clientX-r.left)/sc - this._logDrag.dx, top:(e.clientY-r.top)/sc - this._logDrag.dy } }); };
+    this._onLogUp = () => { this._logDrag = null; };
+    window.addEventListener('mousemove', this._onLogMove);
+    window.addEventListener('mouseup', this._onLogUp);
+    this._onWheel = (e) => { if (!this.state.open) return; e.preventDefault(); this.setState(st=>({ dialIdx: Math.max(0, Math.min(5, (st.dialIdx||0) + (e.deltaY>0?1:-1))) })); };
+    window.addEventListener('wheel', this._onWheel, { passive:false });
+  }
+  componentWillUnmount() { clearInterval(this._timer); clearTimeout(this._toastT); window.removeEventListener('keydown', this._onKey); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('click', this._onDrop); window.removeEventListener('dblclick', this._onDbl); window.removeEventListener('mousemove', this._onLogMove); window.removeEventListener('mouseup', this._onLogUp); window.removeEventListener('wheel', this._onWheel); }
 
-    hideFirstVisitLoader();
-    loadState().then(initPendingSurface);
-  </script>
+  async _loadLiveState() {
+    try {
+      const r = await fetch('/api/datashield-state', { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      this.setState({ liveState: j, agentCount: (j.agents || []).length || this.state.agentCount });
+    } catch (e) {
+      console.warn('Aegis state load failed', e);
+    }
+  }
+
+  _detectNav(text) {
+    const t = (text||'').toLowerCase();
+    if (!/\b(nav|navigate|go to|goto|open|show|take me|jump|switch|pull up|bring up)\b/.test(t)) return null;
+    const map = [ ['swarm',/(defender swarm|swarm|agent|sentinel|guardian|hunter)/], ['containment',/(containment|contain|response plan|orchestrat)/], ['timeline',/(timeline|incident|60.?second|story)/], ['telemetry',/(telemetry|intake|stream|signal)/], ['evidence',/(evidence|vault|artifact|forensic)/], ['brief',/(exec|executive|brief|leadership|report)/], ['settings',/(setting|config|preference)/], ['home',/(home|overview|hero|main|dashboard)/] ];
+    for (const [k,re] of map) { if (re.test(t)) return k; }
+    return null;
+  }
+  async _askGemma(text, isReport) {
+    this.setState({ thinking: true, reply: '', mood: 'content' });
+    try {
+      const r = await fetch('/api/datashield-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ prompt: text, report: !!isReport, max_completion_tokens: isReport ? 640 : 384 })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
+      let msg = j.reply || j.output || '(empty reply)';
+      const nm = msg.match(/\[\[NAV:(\w+)\]\]/i);
+      const upd = { reply: msg, thinking: false, mood: 'happy' };
+      if (nm) { const valid = ['home','swarm','containment','timeline','telemetry','evidence','brief','settings']; const k = nm[1].toLowerCase(); msg = msg.replace(nm[0], '').trim(); upd.reply = msg || ('Opening ' + k + '.'); if (valid.indexOf(k) >= 0) { upd.surface = k; upd.composerOpen = false; } }
+      if (isReport) { const rep = { id: Date.now(), title: 'Incident report', time: new Date().toLocaleString(), body: upd.reply }; const reports = [rep].concat(this.state.reports||[]); upd.reports = reports; try { localStorage.setItem('ds_reports', JSON.stringify(reports.slice(0,20))); } catch(e){} }
+      this.setState(upd);
+    } catch (err) {
+      this.setState({ reply: '⚠ ' + (err && err.message ? err.message : err), thinking: false, mood: 'sad' });
+    }
+  }
+  renderVals() {
+    const open = this.state.open;
+    const n = this.state.agentCount || 0;
+    const fpos = [[9,32],[82,24],[15,74],[88,64],[47,12],[72,82],[31,52],[63,42]];
+    const fanim = ['fl1','fl2','fl3'];
+    const floaters = [];
+    for (let i = 0; i < n; i++) {
+      const p = fpos[i % fpos.length];
+      floaters.push(React.createElement('img', { key: 'fl'+i, src: '/v6/assets/aegis-core.png', alt: '', style: { position:'absolute', left: p[0]+'%', top: p[1]+'%', width: (32 + (i%3)*9)+'px', height:'auto', opacity: .5, filter: 'drop-shadow(0 0 10px rgba(150,190,255,.45))', animation: fanim[i%3] + ' ' + (11 + i*1.6) + 's ease-in-out infinite', animationDelay: (-i*1.4)+'s' } }));
+    }
+    const mood = this.state.mood || 'content';
+    const moodSrc = '/v6/assets/emotes/' + mood + '.png';
+    const emoteEl = React.createElement('img', {
+      key: mood, src: moodSrc, alt: mood,
+      style: { width: '68px', height: '68px', objectFit: 'contain',
+        filter: 'drop-shadow(0 0 11px rgba(150,190,255,.55))',
+        animation: 'emotePop .45s cubic-bezier(.2,1.3,.4,1) both, emoteBob 3.2s ease-in-out .45s infinite' }
+    });
+    const composerOpen = this.state.composerOpen;
+    const composerWrapStyle = { position:'absolute', inset:0, zIndex:70, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(2,4,8,.5)', backdropFilter:'blur(4px)', WebkitBackdropFilter:'blur(4px)', opacity: composerOpen?1:0, pointerEvents: composerOpen?'auto':'none', transition:'opacity .2s ease' };
+    const composerStyle = { display:'flex', flexDirection:'column', alignItems:'stretch', gap:'12px', width:'640px', maxWidth:'82%', padding:'16px 18px', borderRadius:'16px', background:'rgba(18,22,30,.88)', border:'1px solid rgba(255,255,255,.12)', boxShadow:'0 30px 80px -20px rgba(0,0,0,.7)', transform: composerOpen?'translateY(0) scale(1)':'translateY(10px) scale(.98)', transition:'transform .26s cubic-bezier(.2,.85,.25,1.1)' };
+    const onDraft = (e) => this.setState({ draft: e.target.value });
+    const sendMsg = () => { const tx = (this.state.draft||'').trim(); if (!tx) return; const low = tx.toLowerCase(); if (/^\/classic\/?$/.test(low)) { window.location.href = '/classic'; return; } if (/^\/(?:home|overview|main|dashboard)\/?$/.test(low)) { this.setState({ surface: 'home', composerOpen: false, draft: '', lastUser: '', reply: '', mood: 'happy' }); return; } if (/(?:generate|create|make|produce|draft|build)[^]*report|report\s*\(?demo/i.test(low)) { this.setState({ surface: 'evidence', composerOpen: true, lastUser: tx, draft: '', reply: '' }); this._askGemma('Generate a concise security incident report with short labelled sections — Summary, Timeline, Evidence, Actions taken, Recommendation — for the contained finance-admin OAuth abuse and payroll-data exfiltration attempt. Plain text, no markdown symbols.', true); return; } if (/(incident\s*\.?\s*(?:log|report)|the\s+(?:log|report)\b)/.test(low) && /(close|hide|dismiss|open|show)/.test(low)) { const opening = /(open|show)/.test(low); this.setState({ logOpen: opening, composerOpen:false, draft:'', lastUser:'', reply:'', mood:'happy' }); return; } const nav = this._detectNav(tx); if (nav) { this.setState({ surface: nav, composerOpen: false, draft: '', lastUser: '', reply: '', mood: 'happy' }); return; } this.setState({ lastUser: tx, draft: '' }); this._askGemma(tx); };
+    const closeComposer = () => this.setState({ composerOpen:false, draft:'' });
+    const onComposerKey = (e) => { if (e.key==='Escape') { e.preventDefault(); closeComposer(); } else if (e.key==='Enter') { e.preventDefault(); sendMsg(); } };
+    const stop = (e) => e.stopPropagation();
+    const inputRef = this._inputRef;
+    const avatarStyle = { position:'absolute', left: this.state.avatarPos.left + 'px', top: this.state.avatarPos.top + 'px', zIndex:50, width:'118px', height:'118px', cursor: this.state.moving ? 'grabbing' : 'pointer', transition: this.state.moving ? 'none' : 'left .85s cubic-bezier(.22,.8,.2,1), top .85s cubic-bezier(.22,.8,.2,1)', animation: this.state.moving ? 'none' : 'logoFloat 5.5s ease-in-out infinite' };
+    const grabAvatar = () => { clearTimeout(this._clickT); this.setState({ moving: true }); };
+    const avatarClick = () => { if (this.state.moving) { this.setState({ moving: false }); return; } clearTimeout(this._clickT); this._clickT = setTimeout(() => this.setState(s => ({ open: !s.open })), 240); };
+    const _lp = this.state.logPos;
+    const logStyle = { position:'absolute', zIndex:3, width:'440px', maxWidth:'44%', background:'rgba(6,10,15,.72)', border:'1px solid rgba(120,200,255,.28)', boxShadow:'0 0 22px rgba(110,200,255,.12), inset 0 0 30px rgba(110,200,255,.04)', backdropFilter:'blur(3px)', cursor:'grab', display: this.state.logOpen ? 'block' : 'none', left: _lp ? _lp.left+'px' : '40%', top: _lp ? _lp.top+'px' : 'calc(50% + 152px)', transform: _lp ? 'none' : 'translateX(-50%)' };
+    const startLogDrag = (e) => { if (!this._frameEl) return; const r = this._frameEl.getBoundingClientRect(); const sc = r.width/1440 || 1; const el = e.currentTarget.getBoundingClientRect(); this._logDrag = { dx:(e.clientX-el.left)/sc, dy:(e.clientY-el.top)/sc }; e.preventDefault(); };
+    const surface = this.state.surface;
+    const PAGES = {
+      swarm: { eyebrow:'DEFENDER SWARM', title:'Defender swarm', sub:'Four Gemma agents on watch — all green.', rows:[['Data Sentinel','93% \u00b7 on watch','Sensitive stores inventoried; access patterns look normal.'],['Identity Guardian','92% \u00b7 on watch','Identity, logins and OAuth consents all consistent and trusted.'],['Endpoint Hunter','85% \u00b7 on watch','Endpoint and EDR telemetry clean — no suspicious activity.'],['Response Orchestrator','85% \u00b7 drafting','Standing by with a one-tap containment plan if anything changes.']] },
+      containment: { eyebrow:'ORCHESTRATOR', title:'Containment plan', sub:'Generated under a live latency budget \u2014 1.9s.', rows:[['Revoke OAuth grant','step 01','Invalidate the malicious grant and all refresh tokens.'],['Disable session','step 02','Kill the active finance-admin session immediately.'],['Freeze export key','step 03','Lock the S3 export key and snapshot the bucket as evidence.'],['Isolate workstation','step 04','Quarantine the host and kill the PowerShell cradle.']] },
+      timeline: { eyebrow:'60-SECOND STORY', title:'Incident timeline', sub:'From first signal to exec brief in under a minute.', rows:[['Breach signal','0s','Enterprise data breach in progress.'],['Swarm launch','5s','Gemma 4 defender swarm activated.'],['OAuth abuse','12s','Malicious grant links to payroll exports.'],['Agent findings','20s','Four agents converge on one exfil chain.'],['Speed proof','35s','Containment plan generated under live latency budget.'],['Brief ready','50s','Faster containment, evidence preserved.']] },
+      telemetry: { eyebrow:'TELEMETRY INTAKE', title:'Telemetry intake', sub:'Five live streams feeding the swarm.', rows:[['Identity','live \u00b7 2.1k/s','Logins, OAuth consents and impossible-travel signals.'],['DLP','live \u00b7 840/s','Sensitive-data movement across stores and shares.'],['Endpoint','live \u00b7 5.4k/s','EDR plus workstation process and command telemetry.'],['SaaS','live \u00b7 1.3k/s','Admin actions, exports and app grants.'],['Storage','live \u00b7 3.0k/s','Bucket access, export keys and snapshots.']] },
+      evidence: { eyebrow:'PRESERVED', title:'Evidence vault', sub:'Immutable artifacts captured during containment.', rows:[['S3 bucket snapshot','frozen','Export bucket and key state captured at T+35s.'],['OAuth grant log','sealed','Malicious consent and refresh-token chain.'],['PowerShell capture','sealed','Download cradle and full command transcript.'],['RDP session record','sealed','Lateral movement with service-account reuse.'],['Payroll manifest','sealed','Staged payroll and bank-account file list.']] },
+      brief: { eyebrow:'FOR LEADERSHIP', title:'Exec brief', sub:'What happened, what we did, what it saved.', rows:[['Threat','contained','Finance-admin account abused for a payroll-data exfil attempt.'],['Response','automated','Session disabled, OAuth revoked, export key frozen in 1.9s.'],['Impact','prevented','Exfiltration blocked before data left the perimeter.'],['Evidence','preserved','Full artifact chain sealed for IR and audit.']] },
+      settings: { eyebrow:'CONFIGURATION', title:'Settings', sub:'Tune the Aegis defender swarm.', rows:[['Auto-contain','ON','Let the swarm execute containment without approval.'],['Model','gemma-4-31b','Cerebras inference model powering Gemma.'],['Notifications','critical only','When Gemma surfaces an alert to you.'],['API key','server-side','Cerebras key is proxied by the local backend, never shipped in browser code.']] }
+    };
+    const livePages = (this.state.liveState && this.state.liveState.pages) || {};
+    Object.assign(PAGES, livePages);
+    const HE = "'Chakra Petch',sans-serif", MO = "'Chakra Petch',sans-serif";
+    if (!this._briefStamp) { const _n=new Date(), _p=x=>String(x).padStart(2,'0'); this._briefStamp = { time: _p(_n.getUTCHours())+':'+_p(_n.getUTCMinutes())+':'+_p(_n.getUTCSeconds()), date: _n.toLocaleDateString('en-US',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).toUpperCase() }; }
+    let surfaceEl = null;
+    const pg = PAGES[surface];
+    const _reps = (surface==='evidence') ? (this.state.reports||[]) : [];
+    const reportsEl = _reps.length ? React.createElement('div', { style:{ marginBottom:'6px' } }, React.createElement('div', { style:{ fontFamily:MO, fontSize:'11px', letterSpacing:'.3em', color:'rgba(150,200,255,.7)', margin:'0 0 2px' } }, 'SAVED REPORTS \u00b7 ' + _reps.length), _reps.map((rep)=> React.createElement('div', { key:rep.id, style:{ display:'flex', gap:'20px', alignItems:'flex-start', padding:'18px 0', borderBottom:'1px solid rgba(255,255,255,.06)' } }, React.createElement('span', { style:{ width:'9px', height:'9px', borderRadius:'50%', background:'#6effa6', boxShadow:'0 0 10px #6effa6', marginTop:'9px', flex:'none' } }), React.createElement('div', { style:{ flex:1 } }, React.createElement('div', { style:{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:'16px' } }, React.createElement('span', { style:{ fontFamily:HE, fontWeight:500, fontSize:'19px', color:'#eef4ff' } }, rep.title), React.createElement('span', { style:{ fontFamily:MO, fontSize:'12px', letterSpacing:'.08em', color:'#6effa6', whiteSpace:'nowrap' } }, rep.time)), React.createElement('div', { style:{ fontFamily:HE, fontWeight:300, fontSize:'14px', color:'rgba(228,238,252,.92)', marginTop:'8px', whiteSpace:'pre-wrap', lineHeight:1.55 } }, rep.body)))) ) : null;
+    if (surface !== 'home' && surface !== 'brief' && pg) {
+      const glass = (p)=>({ padding:p||'18px 20px', borderRadius:'16px', background:'rgba(14,18,26,.5)', border:'1px solid rgba(255,255,255,.08)', backdropFilter:'blur(10px)', boxShadow:'0 24px 60px -30px rgba(0,0,0,.7)' });
+      const spark = (c,h)=> React.createElement('svg',{viewBox:'0 0 150 36',preserveAspectRatio:'none',width:'100%',height:h||30,style:{display:'block'}}, React.createElement('polyline',{points:'0,28 10,20 20,26 30,14 40,22 50,12 60,20 70,9 80,18 90,11 100,22 110,8 120,16 130,11 140,18 150,9',fill:'none',stroke:c,strokeWidth:1.5}));
+      const META = {
+        swarm:{ accent:'#7fd0ff', stats:[['AGENTS','4',''],['AVG CONFIDENCE','89','%'],['ALERTS','0','']], aside:{title:'Swarm status', status:'all green', lines:['All four agents reporting in.','No anomalies in the last 24h.','Orchestrator on standby.']} },
+        containment:{ accent:'#74e0a4', stats:[['STEPS','4',''],['EXECUTION','1.9','s'],['APPROVAL','auto','']], aside:{title:'Latency budget', status:'ready', lines:['Plan generated in 1.9s.','Every step is reversible.','Audit log attached.']} },
+        timeline:{ accent:'#7fd0ff', stats:[['SIGNAL \u2192 BRIEF','50','s'],['EVENTS','6',''],['DATA SAVED','2.7','GB']], aside:{title:'Outcome', status:'resolved', lines:['Faster containment.','Evidence preserved.','Zero data left the perimeter.']} },
+        telemetry:{ accent:'#7fd0ff', stats:[['STREAMS','5',''],['EVENTS / S','12.6','k'],['DROPPED','0','']], aside:{title:'Pipeline', status:'live', lines:['Five live streams.','Sub-second ingest.','Feeding all four agents.']} },
+        evidence:{ accent:'#74e0a4', stats:[['ARTIFACTS','5',''],['REPORTS',String((this.state.reports||[]).length),''],['INTEGRITY','sealed','']], aside:{title:'Chain of custody', status:'preserved', lines:['Immutable snapshots.','Hashes verified.','Ready for IR & audit.']} },
+        settings:{ accent:'#7fd0ff', stats:[['MODEL','g4-31b',''],['PROXY','server',''],['KEY','hidden','']], aside:{title:'Configuration', status:'saved', lines:['Server-side Cerebras proxy.','Browser never receives the API key.','Demo telemetry is sanitized.']} }
+      };
+      const liveMeta = (this.state.liveState && this.state.liveState.meta) || {};
+      Object.assign(META, liveMeta);
+      const m = META[surface] || META.swarm; const accent = m.accent;
+      surfaceEl = React.createElement('div', { style:{ maxWidth:'1240px' } },
+        React.createElement('div', { onClick:()=>this.setState({surface:'home'}), style:{ display:'inline-flex', alignItems:'center', gap:'8px', cursor:'pointer', color:'rgba(200,214,238,.7)', fontFamily:MO, fontSize:'11px', letterSpacing:'.2em', marginBottom:'24px' } }, '\u2190 OVERVIEW'),
+        React.createElement('div', { style:{ fontFamily:MO, fontSize:'12px', letterSpacing:'.3em', color:accent, marginBottom:'12px' } }, pg.eyebrow),
+        React.createElement('div', { style:{ fontFamily:HE, fontSize:'72px', lineHeight:.9, textTransform:'uppercase', color:'#f4f8ff', letterSpacing:'.005em' } }, pg.title),
+        React.createElement('div', { style:{ fontFamily:HE, fontWeight:300, fontSize:'16px', color:'rgba(231,240,253,.9)', margin:'16px 0 26px', maxWidth:'560px' } }, pg.sub),
+        React.createElement('div', { style:{ display:'flex', gap:'16px', marginBottom:'28px', maxWidth:'820px' } }, m.stats.map((s,i)=>
+          React.createElement('div', { key:i, style:{ ...glass('14px 18px'), flex:1, minWidth:0 } },
+            React.createElement('div', { style:{ fontFamily:MO, fontSize:'10px', letterSpacing:'.18em', color:'rgba(160,182,212,.6)', marginBottom:'8px' } }, s[0]),
+            React.createElement('div', { style:{ display:'flex', alignItems:'baseline', gap:'4px' } },
+              React.createElement('span', { style:{ fontFamily:HE, fontSize:'26px', color:'#eef4ff' } }, s[1]),
+              s[2]?React.createElement('span', { style:{ fontFamily:HE, fontSize:'12px', color:'rgba(190,205,230,.7)' } }, s[2]):null
+            )
+          )
+        )),
+        React.createElement('div', { style:{ display:'flex', gap:'24px', alignItems:'flex-start' } },
+          React.createElement('div', { style:{ flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:'14px' } },
+            reportsEl,
+            pg.rows.map((r,i)=> React.createElement('div', { key:i, style:{ ...glass('16px 18px'), display:'flex', gap:'16px', alignItems:'flex-start' } },
+              React.createElement('span', { style:{ width:'9px', height:'9px', borderRadius:'50%', background:accent, boxShadow:'0 0 10px '+accent, marginTop:'7px', flex:'none' } }),
+              React.createElement('div', { style:{ flex:1, minWidth:0 } },
+                React.createElement('div', { style:{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:'14px' } },
+                  React.createElement('span', { style:{ fontFamily:HE, fontWeight:600, fontSize:'18px', color:'#eef4ff' } }, r[0]),
+                  React.createElement('span', { style:{ fontFamily:MO, fontSize:'11px', letterSpacing:'.12em', color:accent, whiteSpace:'nowrap', textTransform:'uppercase' } }, r[1])
+                ),
+                React.createElement('div', { style:{ fontFamily:HE, fontWeight:300, fontSize:'14px', color:'rgba(228,238,252,.86)', marginTop:'5px', lineHeight:1.5 } }, r[2])
+              )
+            ))
+          ),
+          React.createElement('div', { style:{ ...glass('22px 24px'), width:'360px', flex:'none' } },
+            React.createElement('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'16px' } },
+              React.createElement('span', { style:{ fontFamily:MO, fontSize:'11px', letterSpacing:'.26em', color:'rgba(165,185,215,.55)' } }, m.aside.title.toUpperCase()),
+              React.createElement('span', { style:{ fontFamily:MO, fontSize:'12px', color:accent } }, m.aside.status)
+            ),
+            m.aside.lines.map((l)=> React.createElement('div', { key:l, style:{ display:'flex', gap:'10px', alignItems:'flex-start', marginBottom:'12px' } },
+              React.createElement('span', { style:{ width:'6px', height:'6px', borderRadius:'50%', background:accent, marginTop:'6px', flex:'none' } }),
+              React.createElement('span', { style:{ fontFamily:HE, fontWeight:300, fontSize:'14px', color:'rgba(220,232,250,.85)', lineHeight:1.5 } }, l)
+            )),
+            React.createElement('div', { style:{ marginTop:'12px' } }, spark(accent,40)),
+            React.createElement('div', { style:{ position:'relative', height:'150px', marginTop:'6px' } },
+              React.createElement('div', { style:{ position:'absolute', inset:'34px', borderRadius:'50%', border:'1px solid rgba(170,200,250,.12)', animation:'spinSlow 40s linear infinite' } }),
+              React.createElement('div', { style:{ position:'absolute', inset:'58px', borderRadius:'50%', border:'1px solid rgba(255,160,205,.08)', animation:'spinRev 30s linear infinite' } }),
+              React.createElement('img', { src:'/v6/assets/aegis-core.png', alt:'', style:{ position:'absolute', inset:'16px', width:'calc(100% - 32px)', height:'calc(100% - 32px)', objectFit:'contain', filter:'drop-shadow(0 0 22px rgba(150,190,255,.4))' } })
+            )
+          )
+        )
+      );
+    }
+    const surfaceStyle = { position:'absolute', inset:0, zIndex:9, padding:'70px 64px', overflowY:'auto', background:'radial-gradient(120% 90% at 82% -5%, #141c2a, #000 58%)', opacity: (surface!=='home'&&surface!=='brief')?1:0, pointerEvents: (surface!=='home'&&surface!=='brief')?'auto':'none', transition:'opacity .3s ease' };
+    const _toast = this.state.toast;
+    const toastStyle = { position:'absolute', left:'50%', bottom:'40px', transform: _toast?'translate(-50%,0)':'translate(-50%,12px)', zIndex:72, display:'flex', alignItems:'center', gap:'10px', padding:'12px 18px', borderRadius:'12px', background:'rgba(18,22,30,.92)', border:'1px solid rgba(110,200,255,.3)', boxShadow:'0 20px 50px -16px rgba(0,0,0,.6)', color:'#eef4ff', fontFamily:"'Chakra Petch',sans-serif", fontSize:'14px', opacity: _toast?1:0, pointerEvents:'none', transition:'opacity .25s ease, transform .25s ease' };
+    const _lu = this.state.lastUser, _rp = this.state.reply, _th = this.state.thinking;
+    const chatEl = _lu ? React.createElement('div', { style:{ display:'flex', flexDirection:'column', gap:'10px', maxHeight:'280px', overflowY:'auto', paddingRight:'4px' } },
+      React.createElement('div', { key:'u', style:{ alignSelf:'flex-end', maxWidth:'85%', padding:'9px 13px', borderRadius:'12px 12px 3px 12px', background:'rgba(110,200,255,.14)', border:'1px solid rgba(110,200,255,.3)', color:'#eef4ff', fontFamily:"'Chakra Petch',sans-serif", fontSize:'14px', lineHeight:1.45 } }, _lu),
+      React.createElement('div', { key:'g', style:{ display:'flex', gap:'10px', alignItems:'flex-start' } },
+        React.createElement('img', { src:'/v6/assets/aegis-core.png', alt:'', style:{ width:'24px', height:'24px', objectFit:'contain', flex:'none', marginTop:'2px', filter:'drop-shadow(0 0 6px rgba(150,190,255,.5))' } }),
+        React.createElement('div', { style:{ flex:1, padding:'9px 13px', borderRadius:'3px 12px 12px 12px', background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.08)', color:'rgba(226,235,251,.92)', fontFamily:"'Chakra Petch',sans-serif", fontSize:'14px', lineHeight:1.5, whiteSpace:'pre-wrap' } }, _th ? 'Gemma is thinking\u2026' : _rp)
+      )
+    ) : null;
+    const FL = [['Telemetry intake','telemetry'],['Defender swarm','swarm'],['Containment plan','containment'],['Incident timeline','timeline'],['Evidence vault','evidence'],['Exec brief','brief']];
+    const _di = Math.max(0, Math.min(5, this.state.dialIdx || 0));
+    const flyoutEl = React.createElement('div', { style:{ display:'flex', flexDirection:'column', gap:'10px' } }, FL.map((it,i)=>{ const a=i===_di; return React.createElement('div', { key:it[1], onClick:()=>this.setState({open:false,surface:it[1],active:it[0]}), style:{ display:'flex', alignItems:'center', padding: a?'14px 18px':'12px 16px', borderRadius:'13px', cursor:'pointer', background: a?'rgba(38,44,58,.92)':'rgba(20,24,33,.6)', border: a?'1px solid rgba(110,200,255,.55)':'1px solid rgba(255,255,255,.08)', color: a?'#fff':'rgba(226,235,251,.82)', fontFamily:"'Chakra Petch',sans-serif", fontSize: a?'15.5px':'15px', fontWeight: a?600:500, transform: a?'scale(1.04)':'none', boxShadow: a?'0 16px 44px rgba(0,0,0,.5)':'0 10px 28px rgba(0,0,0,.4)', transition:'all .14s ease' } }, it[0]); }));
+    const onDialWheel = (e) => { this.setState(st=>({ dialIdx: Math.max(0, Math.min(5, (st.dialIdx||0) + (e.deltaY>0?1:-1))) })); };
+    return {
+      mood, emoteEl, floaters, flyoutEl, onDialWheel, surfaceEl, surfaceStyle, isBrief: surface==='brief', briefBack: ()=>this.setState({surface:'home'}), briefTime: this._briefStamp.time, briefDate: this._briefStamp.date, avatarStyle, grabAvatar, avatarClick, logStyle, startLogDrag, toastStyle, toast: _toast, composerWrapStyle, composerStyle, chatEl, draft: this.state.draft, onDraft, sendMsg, closeComposer, onComposerKey, stop, inputRef,
+      toggle: () => this.setState(s => ({ open: !s.open })),
+      close: () => this.setState({ open: false }),
+      pick: (e) => {
+        const n = e && e.currentTarget ? e.currentTarget.getAttribute('data-name') : null;
+        if (n === 'Search') { this.setState({ open: false, composerOpen: true, draft: '' }, () => { const el = this._inputRef.current; if (el) el.focus(); }); return; }
+        const SURF = { 'Overview':'home','Defender swarm':'swarm','Identity Guardian':'swarm','Endpoint Hunter':'swarm','Telemetry intake':'telemetry','Settings':'settings','Containment plan':'containment','Incident timeline':'timeline','Evidence vault':'evidence','Exec brief':'brief' };
+        const s = SURF[n] || 'home';
+        this.setState({ open: false, active: n || this.state.active, surface: s, toast: n || '' });
+        clearTimeout(this._toastT); this._toastT = setTimeout(() => this.setState({ toast: '' }), 2000);
+      },
+      backdropStyle: {
+        position: 'absolute', inset: 0, zIndex: 55,
+        background: 'radial-gradient(70% 70% at 32% 50%, rgba(8,11,18,.5), rgba(0,0,0,.74))',
+        backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)',
+        opacity: open ? 1 : 0,
+        pointerEvents: open ? 'auto' : 'none',
+        transition: 'opacity .35s ease'
+      },
+      menuStyle: {
+        position: 'absolute', inset: 0, zIndex: 58,
+        opacity: open ? 1 : 0,
+        transform: open ? 'scale(1)' : 'scale(.9)',
+        transformOrigin: '440px 470px',
+        pointerEvents: open ? 'auto' : 'none',
+        transition: 'opacity .28s ease, transform .42s cubic-bezier(.2,.85,.25,1.15)'
+      }
+    };
+  }
+}
+</script>
 </body>
 </html>
+
+
