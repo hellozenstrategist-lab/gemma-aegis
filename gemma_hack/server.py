@@ -223,12 +223,41 @@ class Handler(BaseHTTPRequestHandler):
         self._send_bytes(200, path.read_bytes(), content_type)
         return True
 
+    def _serve_classic_static(self, route: str) -> bool:
+        if route in ("/classic", "/classic/", "/classic/index.html"):
+            self._send_bytes(200, load_classic_index_html().encode("utf-8"), "text/html; charset=utf-8")
+            return True
+        if not route.startswith("/classic/"):
+            return False
+        rel = Path(unquote(route.removeprefix("/classic/")))
+        if rel.is_absolute() or ".." in rel.parts:
+            self._send_json(404, {"error": "not found"})
+            return True
+        path = (CLASSIC_UI_DIR / rel).resolve()
+        try:
+            path.relative_to(CLASSIC_UI_DIR.resolve())
+        except ValueError:
+            self._send_json(404, {"error": "not found"})
+            return True
+        if not path.is_file():
+            self._send_json(404, {"error": "not found"})
+            return True
+        content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+        if path.suffix == ".js":
+            content_type = "application/javascript; charset=utf-8"
+        elif path.suffix in {".html", ".htm"}:
+            content_type = "text/html; charset=utf-8"
+        self._send_bytes(200, path.read_bytes(), content_type)
+        return True
+
     def do_GET(self) -> None:  # noqa: N802
         route = urlparse(self.path).path
         if route in ("/", "/index.html"):
             self._send_bytes(200, load_v6_index_html().encode("utf-8"), "text/html; charset=utf-8")
-        elif route in ("/classic", "/classic.html"):
+        elif route == "/classic.html":
             self._send_bytes(200, load_classic_index_html().encode("utf-8"), "text/html; charset=utf-8")
+        elif self._serve_classic_static(route):
+            return
         elif self._serve_v6_static(route):
             return
         elif route == "/healthz":

@@ -26,6 +26,7 @@ SECURITY.md
 tests/test_benchmark_summary.py
 tests/test_core.py
 tests/test_defender_agents.py
+web/classic/aegis-core.png
 web/classic/index.html
 web/v6/assets/aegis-core.png
 web/v6/assets/emotes/alarmed.png
