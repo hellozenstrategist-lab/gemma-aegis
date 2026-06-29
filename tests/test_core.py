@@ -235,7 +235,25 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn('id="homeMascot"', html)
         self.assertIn("isHomeCommand", html)
         self.assertIn("window.location.href = '/'", html)
+        self.assertIn('id="commandInterface"', html)
+        self.assertIn("openCommandInterface", html)
+        self.assertIn("runClassicCommand", html)
+        self.assertIn("document.addEventListener('keydown'", html)
         self.assertEqual(server.INDEX_HTML, html)
+
+    def test_classic_ui_javascript_is_syntax_valid(self):
+        html = server.load_classic_index_html()
+        marker_start = "<script>"
+        marker_end = "</script>"
+        script = html.split(marker_start, 1)[1].split(marker_end, 1)[0]
+        with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as js_file:
+            js_file.write(script)
+            js_path = js_file.name
+        try:
+            result = subprocess.run(["node", "--check", js_path], capture_output=True, text=True, timeout=10)
+        finally:
+            Path(js_path).unlink(missing_ok=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_v6_ui_routes_classic_slash_command_locally(self):
         html = server.load_v6_index_html()
