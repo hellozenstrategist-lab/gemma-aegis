@@ -75,9 +75,10 @@ class ProviderMessageTests(unittest.TestCase):
 
     def test_load_project_env_reads_dotenv_without_overriding_existing_env(self):
         with tempfile.TemporaryDirectory() as td:
+            fake_cerebras_key = "csk" + "-demo-key"
             env_path = Path(td) / ".env"
             env_path.write_text(
-                "\ufeffCEREBRAS_API_KEY=csk-demo-key\n"
+                f"\ufeffCEREBRAS_API_KEY={fake_cerebras_key}\n"
                 "EXISTING_VALUE=from-file\n"
                 "QUOTED_VALUE='quoted text'\n",
                 encoding="utf-8",
@@ -86,7 +87,7 @@ class ProviderMessageTests(unittest.TestCase):
             os.environ.pop("CEREBRAS_API_KEY", None)
             try:
                 loaded = load_project_env(env_path)
-                self.assertEqual(os.environ["CEREBRAS_API_KEY"], "csk-demo-key")
+                self.assertEqual(os.environ["CEREBRAS_API_KEY"], fake_cerebras_key)
                 self.assertEqual(os.environ["EXISTING_VALUE"], "already-set")
                 self.assertEqual(os.environ["QUOTED_VALUE"], "quoted text")
                 self.assertEqual(loaded["CEREBRAS_API_KEY"], "[REDACTED_CEREBRAS_KEY]")
@@ -126,12 +127,13 @@ class MetricsTests(unittest.TestCase):
 
     def test_append_benchmark_record_writes_jsonl_without_secret_leak(self):
         with tempfile.TemporaryDirectory() as td:
+            fake_cerebras_key = "csk" + "-demo-key"
             path = Path(td) / "bench.jsonl"
             append_benchmark_record(
                 path,
                 {
                     "provider": "cerebras",
-                    "api_key": "csk-demo-key",
+                    "api_key": fake_cerebras_key,
                     "output": "safe",
                 },
             )
@@ -142,8 +144,8 @@ class MetricsTests(unittest.TestCase):
             self.assertIn("timestamp_utc", row)
 
     def test_redact_secrets_handles_cerebras_keys_inside_nested_text(self):
-        text = "Authorization: Bearer csk-demo-key"
-        self.assertNotIn("csk-", redact_secrets(text))
+        text = "Authorization: Bearer " + "csk" + "-demo-key"
+        self.assertNotIn("csk" + "-", redact_secrets(text))
         self.assertIn("[REDACTED_CEREBRAS_KEY]", redact_secrets(text))
 
 

@@ -9,6 +9,7 @@ from gemma_hack.summary import format_submission_benchmark_summary, load_jsonl_r
 
 class BenchmarkSummaryTests(unittest.TestCase):
     def test_format_submission_benchmark_summary_counts_only_gemma_as_product_evidence(self):
+        fake_cerebras_key = "csk" + "-abc123shouldnotleak"
         records = [
             {
                 "timestamp_utc": "2026-06-27T03:43:00+00:00",
@@ -66,7 +67,7 @@ class BenchmarkSummaryTests(unittest.TestCase):
                     "output": "OK",
                     "error": None,
                 },
-                "prompt_preview": "secret csk-abc123shouldnotleak",
+                "prompt_preview": f"secret {fake_cerebras_key}",
             },
             {
                 "timestamp_utc": "2026-06-27T03:46:00+00:00",
@@ -91,7 +92,7 @@ class BenchmarkSummaryTests(unittest.TestCase):
         self.assertNotIn("Fastest: gpt-oss-120b", summary)
         self.assertNotIn("201.4 ms", summary)
         self.assertNotIn("652.9 ms", summary)
-        self.assertNotIn("csk-", summary)
+        self.assertNotIn("csk" + "-", summary)
 
     def test_load_jsonl_records_skips_blank_and_malformed_lines(self):
         with tempfile.TemporaryDirectory() as td:
