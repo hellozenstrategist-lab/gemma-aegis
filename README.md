@@ -107,23 +107,3 @@ PYTHONPATH=. python scripts/smoke.py "Say ready in one sentence."
 ```
 
 If Cerebras returns a model-access error for `gemma-4-31b`, the key is not attached to an account with Gemma 4 access. That is an account/model access issue, not a browser or localhost issue.
-
-## 60-Second Demo Flow
-
-0-5 seconds: show the problem: enterprise data breach signals across identity, endpoint, SaaS, DLP, and storage.
-
-5-20 seconds: run Gemma 4 on Cerebras through the Aegis defender swarm.
-
-20-35 seconds: show the four agent findings and latency/token metrics.
-
-35-50 seconds: open containment, evidence, and executive brief pages.
-
-50-60 seconds: close with the business impact: faster containment, preserved evidence, and clearer leadership action.
-
-## Suggested Submission Copy
-
-**Title:** Gemma Aegis: Always-On Blue-Team Defender Agents on Cerebras
-
-**Description:** Gemma Aegis is an always-on defender swarm for enterprise data. Gemma 4 watches identity, DLP, endpoint, SaaS, and storage telemetry, then coordinates four defender agents to identify data at risk, connect the attack chain, recommend containment, preserve evidence, and brief leadership. Cerebras makes the loop fast enough for incident response instead of after-action reporting.
-
-**Tracks:** agent collaboration, multimodal incident triage, cybersecurity, enterprise impact.
