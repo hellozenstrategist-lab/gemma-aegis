@@ -1,0 +1,28 @@
+.env
+.env.*
+!.env.example
+
+# Local runtime state
+logs/
+dogfood-output/
+autopilot/
+dist/
+models/
+_incoming*/
+*.zip
+*.log
+
+# Python/cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
