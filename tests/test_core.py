@@ -235,6 +235,11 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn('id="homeMascot"', html)
         self.assertIn("isHomeCommand", html)
         self.assertIn("window.location.href = '/'", html)
+        self.assertIn('id="mascotJump"', html)
+        self.assertIn('href="/#evidence"', html)
+        self.assertIn("toggleMascotJump", html)
+        self.assertIn("jumpToSurface", html)
+        self.assertIn("sessionStorage.setItem(AEGIS_SURFACE_KEY", html)
         self.assertIn('id="commandInterface"', html)
         self.assertIn("openCommandInterface", html)
         self.assertIn("runClassicCommand", html)
@@ -261,6 +266,9 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn("window.location.href = '/classic'", html)
         self.assertIn("/^\\/(?:home|overview|main|dashboard)\\/?$/.test(low)", html)
         self.assertIn("surface: 'home'", html)
+        self.assertIn("sessionStorage.getItem('gemma_aegis_surface')", html)
+        self.assertIn("sessionStorage.removeItem('gemma_aegis_surface')", html)
+        self.assertIn("location.hash.replace", html)
 
     def test_index_html_surfaces_top_level_api_errors(self):
         self.assertIn("if (!res.ok || data.error)", INDEX_HTML)

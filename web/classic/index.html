@@ -65,7 +65,7 @@
     @keyframes gemmaFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
 
     /* ===== header ===== */
-    header { position:relative; z-index:1; padding:32px 40px 22px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:14px; }
+    header { position:relative; z-index:40; padding:32px 40px 22px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:14px; }
     .brand { display:flex; align-items:center; gap:18px; }
     .orbit { position:relative; width:54px; height:54px; flex:none; }
     .orbit .ring { position:absolute; border-radius:50%; border:1px solid transparent; }
@@ -123,6 +123,54 @@
       text-transform:uppercase;
       white-space:nowrap;
     }
+    .mascot-jump {
+      position:fixed;
+      right:32px;
+      top:126px;
+      z-index:30;
+      width:260px;
+      padding:12px;
+      border:1px solid rgba(130,190,255,.30);
+      border-radius:16px;
+      background:rgba(5,9,15,.88);
+      box-shadow:0 30px 80px -28px rgba(0,0,0,.95), 0 0 26px -14px rgba(120,190,255,.7), inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(-8px) scale(.98);
+      transition:opacity .18s ease, transform .18s ease;
+    }
+    .mascot-jump.open {
+      opacity:1;
+      pointer-events:auto;
+      transform:translateY(0) scale(1);
+    }
+    .mascot-jump-title {
+      margin:0 0 9px;
+      font-family:var(--mono);
+      font-size:10px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:rgba(170,205,255,.7);
+    }
+    .mascot-jump a {
+      display:block;
+      width:100%;
+      margin:0 0 7px;
+      padding:10px 11px;
+      border:1px solid var(--line-strong);
+      border-radius:11px;
+      text-align:left;
+      font-size:13px;
+      letter-spacing:.02em;
+      color:rgba(232,240,255,.88);
+      background:rgba(255,255,255,.035);
+      text-decoration:none;
+      transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .mascot-jump a:last-child { margin-bottom:0; }
+    .mascot-jump a:hover { color:#fff; background:rgba(120,190,255,.12); border-color:var(--accent-line); transform:translateY(-1px); }
 
     main { position:relative; z-index:1; padding:26px 40px 52px; display:grid; grid-template-columns: 444px 1fr; gap:22px; }
 
@@ -284,12 +332,23 @@
   <div class="stars2"></div>
 </div>
 <header>
-  <button class="gemma-star" id="homeMascot" type="button" aria-label="Return home">
+  <button class="gemma-star" id="homeMascot" type="button" aria-label="Open Gemma jump menu" aria-expanded="false" aria-controls="mascotJump">
     <span class="halo"></span>
     <span class="halo b"></span>
     <img src="aegis-core.png" alt="" />
     <span class="label">Gemma</span>
   </button>
+  <div class="mascot-jump" id="mascotJump" aria-hidden="true">
+    <div class="mascot-jump-title">Jump to</div>
+    <a href="/" data-surface="home">Overview</a>
+    <a href="/#telemetry" data-surface="telemetry">Telemetry intake</a>
+    <a href="/#swarm" data-surface="swarm">Defender swarm</a>
+    <a href="/#containment" data-surface="containment">Containment plan</a>
+    <a href="/#timeline" data-surface="timeline">Incident timeline</a>
+    <a href="/#evidence" data-surface="evidence">Evidence vault</a>
+    <a href="/#brief" data-surface="brief">Exec brief</a>
+    <a href="/#settings" data-surface="settings">Settings</a>
+  </div>
   <div class="brand">
     <div class="orbit" aria-hidden="true">
       <span class="ring r1"></span>
@@ -367,6 +426,17 @@ const $ = (id) => document.getElementById(id);
 const PRIMARY_MODEL = 'gemma-4-31b';
 const DATASHIELD_BRIEF_ENDPOINT = '/api/datashield-brief';
 let sampleImageDataUri = null;
+const AEGIS_SURFACE_KEY = 'gemma_aegis_surface';
+const SURFACE_COMMANDS = [
+  ['home', /(home|overview|main|dashboard)/],
+  ['telemetry', /(telemetry|intake|stream|signal)/],
+  ['swarm', /(defender swarm|swarm|agent|sentinel|guardian|hunter)/],
+  ['containment', /(containment|contain|response plan|orchestrat)/],
+  ['timeline', /(timeline|incident timeline|60.?second|story)/],
+  ['evidence', /(evidence|vault|artifact|forensic)/],
+  ['brief', /(exec|executive|brief|leadership|report)/],
+  ['settings', /(setting|config|preference)/]
+];
 function isTextEntryTarget(target) {
   const tag = (target && target.tagName || '').toLowerCase();
   return tag === 'input' || tag === 'textarea' || tag === 'select' || !!(target && target.isContentEditable);
@@ -379,6 +449,31 @@ function isHomeCommand(text) {
 }
 function goHome() {
   window.location.href = '/';
+}
+function jumpToSurface(surface) {
+  const target = String(surface || 'home').toLowerCase();
+  try {
+    if (target === 'home') sessionStorage.removeItem(AEGIS_SURFACE_KEY);
+    else sessionStorage.setItem(AEGIS_SURFACE_KEY, target);
+  } catch (e) {}
+  window.location.href = '/';
+}
+function surfaceFromCommand(text) {
+  const t = String(text || '').trim().toLowerCase();
+  if (!/\b(nav|navigate|go to|goto|open|show|take me|jump|switch|pull up|bring up)\b/.test(t) && !t.startsWith('/')) return null;
+  for (const [surface, re] of SURFACE_COMMANDS) {
+    if (re.test(t)) return surface;
+  }
+  return null;
+}
+function toggleMascotJump(force) {
+  const menu = $('mascotJump');
+  const button = $('homeMascot');
+  if (!menu || !button) return;
+  const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+  button.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 function openCommandInterface(prefill = '') {
   const wrap = $('commandInterface');
@@ -411,7 +506,12 @@ function runClassicCommand(text) {
   const low = cmd.toLowerCase();
   if (!cmd) return;
   if (isHomeCommand(cmd)) {
-    goHome();
+    jumpToSurface('home');
+    return;
+  }
+  const surface = surfaceFromCommand(cmd);
+  if (surface) {
+    jumpToSurface(surface);
     return;
   }
   if (/^\/classic\/?$/.test(low)) {
@@ -543,10 +643,24 @@ $('loadDemoImage').onclick = async () => {
   }
 };
 $('clearDemoImage').onclick = clearDemoImageAttachment;
-$('homeMascot').onclick = goHome;
+$('homeMascot').onclick = (event) => {
+  event.stopPropagation();
+  toggleMascotJump();
+};
+$('mascotJump').addEventListener('click', (event) => {
+  event.stopPropagation();
+});
+document.querySelectorAll('#mascotJump [data-surface]').forEach((button) => {
+  button.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    jumpToSurface(button.getAttribute('data-surface'));
+  });
+});
 $('commandInput').addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     event.preventDefault();
+    toggleMascotJump(false);
     closeCommandInterface();
     return;
   }
@@ -559,6 +673,7 @@ document.addEventListener('keydown', (event) => {
   if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
   if (isTextEntryTarget(event.target)) return;
   if (event.key === 'Escape') {
+    toggleMascotJump(false);
     closeCommandInterface();
     return;
   }
@@ -567,9 +682,18 @@ document.addEventListener('keydown', (event) => {
     openCommandInterface(event.key);
   }
 });
+document.addEventListener('click', (event) => {
+  if (event.target.closest && event.target.closest('#homeMascot, #mascotJump')) return;
+  toggleMascotJump(false);
+});
 $('run').onclick = async () => {
   if (isHomeCommand($('prompt').value)) {
-    goHome();
+    jumpToSurface('home');
+    return;
+  }
+  const promptSurface = surfaceFromCommand($('prompt').value);
+  if (promptSurface) {
+    jumpToSurface(promptSurface);
     return;
   }
   $('run').disabled = true; $('cStatus').textContent='running'; $('bStatus').textContent='running';

@@ -350,6 +350,16 @@ class Component extends DCLogic {
 
   componentDidMount() {
     try { const sr = JSON.parse(localStorage.getItem('ds_reports')||'[]'); if (Array.isArray(sr) && sr.length) this.setState({ reports: sr }); } catch(e){}
+    try {
+      let pendingSurface = sessionStorage.getItem('gemma_aegis_surface');
+      sessionStorage.removeItem('gemma_aegis_surface');
+      const names = { home:'Overview', swarm:'Defender swarm', containment:'Containment plan', timeline:'Incident timeline', telemetry:'Telemetry intake', evidence:'Evidence vault', brief:'Exec brief', settings:'Settings' };
+      if (!pendingSurface && location.hash) pendingSurface = location.hash.replace(/^#/, '').toLowerCase();
+      if (pendingSurface && names[pendingSurface]) {
+        this.setState({ surface: pendingSurface, active: names[pendingSurface], toast: names[pendingSurface], open: false });
+        if (location.hash) history.replaceState(null, '', location.pathname);
+      }
+    } catch(e){}
     // moods Gemma 4 can emit; mapped to sketch emotes in assets/emotes/
     this.moods = ['content','happy','excited','confused','alarmed','angry','sad','love'];
     this._auto = true; this._i = 0;
