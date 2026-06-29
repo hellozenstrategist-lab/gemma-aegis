@@ -232,12 +232,17 @@ class ServerUiTests(unittest.TestCase):
         self.assertIn('id="loadBlueTeamScenario"', html)
         self.assertIn('class="gemma-star"', html)
         self.assertIn("gemmaFloat", html)
+        self.assertIn('id="homeMascot"', html)
+        self.assertIn("isHomeCommand", html)
+        self.assertIn("window.location.href = '/'", html)
         self.assertEqual(server.INDEX_HTML, html)
 
     def test_v6_ui_routes_classic_slash_command_locally(self):
         html = server.load_v6_index_html()
         self.assertIn("/^\\/classic\\/?$/.test(low)", html)
         self.assertIn("window.location.href = '/classic'", html)
+        self.assertIn("/^\\/(?:home|overview|main|dashboard)\\/?$/.test(low)", html)
+        self.assertIn("surface: 'home'", html)
 
     def test_index_html_surfaces_top_level_api_errors(self):
         self.assertIn("if (!res.ok || data.error)", INDEX_HTML)

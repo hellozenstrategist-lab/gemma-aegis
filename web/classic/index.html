@@ -82,8 +82,14 @@
       width:82px;
       height:82px;
       z-index:2;
-      pointer-events:none;
+      pointer-events:auto;
+      cursor:pointer;
       animation:gemmaFloat 5.5s ease-in-out infinite;
+      margin:0;
+      padding:0;
+      border:0;
+      background:transparent;
+      appearance:none;
     }
     .gemma-star .halo {
       position:absolute;
@@ -221,12 +227,12 @@
   <div class="stars2"></div>
 </div>
 <header>
-  <div class="gemma-star" aria-hidden="true">
+  <button class="gemma-star" id="homeMascot" type="button" aria-label="Return home">
     <span class="halo"></span>
     <span class="halo b"></span>
     <img src="aegis-core.png" alt="" />
     <span class="label">Gemma</span>
-  </div>
+  </button>
   <div class="brand">
     <div class="orbit" aria-hidden="true">
       <span class="ring r1"></span>
@@ -297,6 +303,15 @@ const $ = (id) => document.getElementById(id);
 const PRIMARY_MODEL = 'gemma-4-31b';
 const DATASHIELD_BRIEF_ENDPOINT = '/api/datashield-brief';
 let sampleImageDataUri = null;
+function isHomeCommand(text) {
+  const t = String(text || '').trim().toLowerCase();
+  return /^\/(?:home|overview|main|dashboard)\/?$/.test(t)
+    || /^(?:home|overview|main|dashboard)$/.test(t)
+    || /\b(?:go|goto|open|show|take me|bring me|return|back|navigate|switch)\s+(?:back\s+)?(?:to\s+)?(?:home|overview|main|dashboard)\b/.test(t);
+}
+function goHome() {
+  window.location.href = '/';
+}
 function isGemmaAccessError(text) {
   return String(text || '').includes('does not exist or you do not have access') || String(text || '').includes('model_not_found');
 }
@@ -398,7 +413,12 @@ $('loadDemoImage').onclick = async () => {
   }
 };
 $('clearDemoImage').onclick = clearDemoImageAttachment;
+$('homeMascot').onclick = goHome;
 $('run').onclick = async () => {
+  if (isHomeCommand($('prompt').value)) {
+    goHome();
+    return;
+  }
   $('run').disabled = true; $('cStatus').textContent='running'; $('bStatus').textContent='running';
   $('cOut').textContent='Running...'; $('bOut').textContent='Running...'; $('cMetrics').innerHTML=''; $('bMetrics').innerHTML='';
   try {
